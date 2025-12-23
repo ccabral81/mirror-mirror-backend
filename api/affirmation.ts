@@ -1,5 +1,3 @@
-import OpenAI from "openai";
-
 // --- Minimal types (keep aligned with app) ---
 type DayMode = "morning" | "afternoon" | "evening";
 type Tone = "luxury-calm" | "direct-calm";
@@ -13,6 +11,16 @@ type AffirmationRequest = {
   tier?: "free" | "premium";
   mustIncludeName?: boolean;
 };
+
+let OpenAiClass: any = null;
+
+async function getOpenAIClient(apiKey: string) {
+  if (!OpenAiClass){
+    const mod = await import("openai");
+    OpenAiClass = mod.default;
+  }
+  return new OpenAiClass({apiKey});
+}
 
 // --- Tiny in-memory rate limit (good enough for MVP) ---
 // NOTE: serverless instances can scale, so this is "best-effort".

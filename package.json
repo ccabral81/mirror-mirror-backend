@@ -2,7 +2,7 @@
   "name": "mirror-mirror-backend",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
+  "type": "commonjs",
   "engines": {
     "node": "20.x"
   },
