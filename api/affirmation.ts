@@ -279,11 +279,10 @@ const nameRule = includeName
   : `Do not use the user's name in this statement.`;
 
   const nameExtraRule = includeName
-  ? "Use the name at most once total. Never repeat the name. If the name does not fit naturally, omit it."
+  ? "Use the name at most once and only in the first sentence. Never repeat the name in any other sentence. If the name does not fit naturally, omit it."
   : "";
 
-
-const bannedPhrasesEn = [
+  const bannedPhrasesEn = [
   "breathe",
   "breath",
   "relax",
@@ -315,16 +314,20 @@ const bannedPhrasesEn = [
   "decisions need to be made",
   "decisions need to be",
   "actions taken now will",
-  "review what",
-  "note any",
-  "plan the next steps"
-];
+  "let your thoughts",
+  "let yourself",
+  "let rest be intentional",
+  "turn down the internal volume",
+  "put a soft boundary",
+  "finish line",
+  "release the rest",
+  "offer yourself a calm finish line"
+  ];
 
 const bannedLineEn = `Avoid these phrases entirely: ${bannedPhrasesEn
   .map((p) => `"${p}"`)
   .join(", ")}.`;
 
- 
 const intentTextEn =
   intent === "orient"
     ? "Focus on clarifying where the person is and what matters right now."
@@ -342,9 +345,10 @@ const intentTextEs =
     ? "Enfócate en recomendar un siguiente paso claro y realista."
     : "Enfócate en ayudar a cerrar el día o cerrar un pendiente de forma deliberada.";
 
-const baseRulesEn = [
+  const baseRulesEn = [
   `Write a short mirror statement in the "Calm Operator" voice.`,
   `Write exactly ${sentences} short sentence(s).`,
+  `Do NOT write more than ${sentences} sentences under any circumstance.`,
   "Be practical and composed.",
   "Each sentence must be short and direct.",
   "Avoid making a list of small steps. Combine related ideas into fewer, stronger senteces.",
@@ -358,10 +362,9 @@ const baseRulesEn = [
   "No metaphors, no imagery, no breathing instructions.",
   "Each sentence must be plain and declarative.",
   "No emojis. No exclamation marks."
-].join(" ");
+  ].join(" ");
 
-
-const baseRulesEs = [
+  const baseRulesEs = [
   `Escribe una declaración breve en la voz "Calm Operator".`,
   `Escribe exactamente ${sentences} oración(es) cortas.`,
   "Sé práctico y sereno.",
@@ -370,9 +373,9 @@ const baseRulesEs = [
   "Sin metáforas, sin imágenes, sin instrucciones de respiración.",
   "Cada oración debe ser simple y declarativa.",
   "Sin emojis. Sin signos de exclamación."
-].join(" ");
+  ].join(" ");
 
-const prompt =
+  const prompt =
   language === "es"
     ? [
         baseRulesEs,
@@ -390,9 +393,6 @@ const prompt =
         nameExtraRule,
         "Return ONLY the final text, no bullet points, no explanation."
       ].join("\n\n");
-
-
-
 
   try {
     const client = await getOpenAIClient(apiKey);
