@@ -157,6 +157,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Name inclusion policy (35% unless mustIncludeName)
   const includeName = mustIncludeName ? true : Math.random() < 0.35;
 
+  const openerRulesEn = [
+    "Vary the first word; do not start with 'Today' or 'You' every time.",
+    "Do not reuse the same opening structure from prior requests.",
+    "Prefer openers like: 'This morning', 'In this moment', 'Right now', 'As you begin', 'With a steady breath', 'Quietly', 'Gently', 'Step by step'."
+  ].join(" ");
+
   const style =
     tone === "direct-calm"
       ? "direct, calm, action-oriented, no hype"
@@ -180,7 +186,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const prompt =
     language === "es"
       ? `Genera una afirmación breve para el usuario. Nombre: ${name}. Estilo: ${style}. Intención del momento del día: ${intent}. ${nameRule} ${constraints}`
-      : `Generate a brief affirmation for the user. Name: ${name}. Style: ${style}. Day-mode intent: ${intent}. ${nameRule} ${constraints}`;
+      : `Generate a brief affirmation for the user. Name: ${name}. Style: ${style}. Day-mode intent: ${intent}. ${nameRule} ${constraints} ${openerRulesEn}`;
 
   try {
     const client = await getOpenAIClient(apiKey);
@@ -188,6 +194,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const r = await client.responses.create({
       model: "gpt-4.1-mini",
       input: prompt,
+      temperature: 1.1
     });
 
     const text = String(r.output_text ?? "").trim();
