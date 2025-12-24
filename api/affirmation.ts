@@ -207,7 +207,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     "Choose progress over perfection and move once.",
   ],
 
-evening: [
+  evening: [
     "Tonight, you can set things down without losing momentum.",
     "Let the day end cleanly, even if everything isn’t finished.",
     "Choose a quiet ending, then step away on purpose.",
@@ -272,9 +272,9 @@ evening: [
 
   const firstSentence = includeName ? `${name}, ${openerRaw.charAt(0).toLowerCase()}${openerRaw.slice(1)}` : openerRaw;
 
-const intent = modeToIntent(mode);
+  const intent = modeToIntent(mode);
 
-const nameRule = includeName
+  const nameRule = includeName
   ? `Use the user's name "${name}" once in the first sentence, in a natural way.`
   : `Do not use the user's name in this statement.`;
 
@@ -324,11 +324,11 @@ const nameRule = includeName
   "offer yourself a calm finish line"
   ];
 
-const bannedLineEn = `Avoid these phrases entirely: ${bannedPhrasesEn
+  const bannedLineEn = `Avoid these phrases entirely: ${bannedPhrasesEn
   .map((p) => `"${p}"`)
   .join(", ")}.`;
 
-const intentTextEn =
+  const intentTextEn =
   intent === "orient"
     ? "Focus on clarifying where the person is and what matters right now."
     : intent === "act"
@@ -336,9 +336,9 @@ const intentTextEn =
     : "Focus on helping the person end the day or close a loop on purpose.";
 
 // Spanish versions (simple for now)
-const bannedLineEs = `Evita completamente expresiones como: respirar, relájate, suavemente, soltar, exhalar, sistema nervioso.`;
+  const bannedLineEs = `Evita completamente expresiones como: respirar, relájate, suavemente, soltar, exhalar, sistema nervioso.`;
 
-const intentTextEs =
+  const intentTextEs =
   intent === "orient"
     ? "Enfócate en aclarar dónde está la persona y qué importa ahora."
     : intent === "act"
