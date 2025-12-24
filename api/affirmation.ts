@@ -157,6 +157,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Name inclusion policy (35% unless mustIncludeName)
   const includeName = mustIncludeName ? true : Math.random() < 0.35;
 
+  const OPENER_BANK = {
+  morning: [
+    "As the day begins, choose a single clear priority.",
+    "This morning, keep your pace calm and deliberate.",
+    "Before you start, take one steady breath and set direction.",
+    "Open the day with one small, clean win.",
+    "Begin with clarity, not urgency.",
+  ],
+  afternoon: [
+    "Midday is a chance to tighten focus and simplify.",
+    "Return to the one task that moves things forward.",
+    "Keep your attention clean and your next step obvious.",
+    "Let the middle of the day be steady, not rushed.",
+    "Choose progress over perfection and move once.",
+  ],
+  evening: [
+    "Let the day soften at the edges and come to a close.",
+    "Set down what you can’t finish tonight with quiet confidence.",
+    "Give yourself permission to end the day gently.",
+    "Close the loop on one thing, then release the rest.",
+    "Let your nervous system settle; you’ve done enough for today.",
+  ],
+  } as const;
+
+  function pick<T>(arr: readonly T[]) {
+  return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  const opener = pick(OPENER_BANK[mode]);
+  const firstSentence = includeName ? `${name}, ${opener.charAt(0).toLowerCase()}${opener.slice(1)}` : opener;
+
   const openerBan = "Do not start the first sentence with 'Today', 'You', 'This', or the user's name unless required. Avoid repeating any opener pattern.";
 
   const openerRulesEn = [
@@ -185,10 +216,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     "Keep it practical and calming.",
   ].join(" ");
 
+  const remaining = sentences === 2 ? 1 : 2;
+
+  const bannedPhrases = [
+    "with a steady breath",
+    "gently",
+    "step by step",
+    "quiet awareness",
+    "reflection offers clarity",
+    "measured sense of calm",
+    "thoughtful closure",
+    "let each exhale",
+    "grounding your intentions",
+  ];
+
+  const banLine = `Avoid these phrases entirely: ${bannedPhrases.map(p => `"${p}"`).join(", ")}.`;
+
+  const structureChoices = [
+    "Structure A: practical action → calming reframe → close.",
+    "Structure B: body cue → focus cue → close.",
+    "Structure C: simplify → commit → release.",
+    "Structure D: acknowledge → choose → settle."
+  ];
+  const structure = pick(structureChoices);
+
   const prompt =
     language === "es"
-      ? `Genera una afirmación breve para el usuario. Nombre: ${name}. Estilo: ${style}. Intención del momento del día: ${intent}. ${nameRule} ${constraints}`
-      : `Generate a brief affirmation for the user. Name: ${name}. Style: ${style}. Day-mode intent: ${intent}. ${nameRule} ${constraints} ${openerRulesEn} ${openerBan}`;
+      ? `Escribe exactamente ${remaining} oración(es) para completar una afirmación. La primera oración ya está fijada y NO puedes cambiarla:\n"${firstSentence}"\n\n${structure}\n${banLine}\nSin emojis. Sin signos de exclamación. Sin clichés. Manténlo práctico y sereno. Devuelve SOLO el texto final con ${sentences} oraciones.`
+      : `Write exactly ${remaining} sentence(s) to complete an affirmation. The first sentence is fixed and you MUST NOT change it:\n"${firstSentence}"\n\n${structure}\n${banLine}\nNo emojis. No exclamation marks. No clichés. Keep it practical and calming. Return ONLY the final text with exactly ${sentences} sentences.`;
+
 
   try {
     const client = await getOpenAIClient(apiKey);
@@ -199,10 +255,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       temperature: 1.1
     });
 
-    const text = String(r.output_text ?? "").trim();
+   let text = String(r.output_text ?? "").trim();
+
     if (!text) {
       return res.status(502).json({ error: "Empty response from model" });
     }
+
+    // Ensure the fixed opener is the first sentence
+    // (belt + suspenders in case the model omits or alters it)
+    if (!text.startsWith(firstSentence)) {
+      text = `${firstSentence} ${text}`.trim();
+    }    
 
     const result: AffirmationResult = {
       text,
