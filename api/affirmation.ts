@@ -278,6 +278,11 @@ const nameRule = includeName
   ? `Use the user's name "${name}" once in the first sentence, in a natural way.`
   : `Do not use the user's name in this statement.`;
 
+  const nameExtraRule = includeName
+  ? "Use the name at most once total. Never repeat the name. If the name does not fit naturally, omit it."
+  : "";
+
+
 const bannedPhrasesEn = [
   "breathe",
   "breath",
@@ -295,6 +300,7 @@ const bannedLineEn = `Avoid these phrases entirely: ${bannedPhrasesEn
   .map((p) => `"${p}"`)
   .join(", ")}.`;
 
+ 
 const intentTextEn =
   intent === "orient"
     ? "Focus on clarifying where the person is and what matters right now."
@@ -316,12 +322,16 @@ const baseRulesEn = [
   `Write a short mirror statement in the "Calm Operator" voice.`,
   `Write exactly ${sentences} short sentence(s).`,
   "Be practical and composed.",
-  "Prefer action and decision over emotion and description.",
+  "Prefer action and decision over emotion or description.",
+  "Do NOT describe the user's mental state.",
+  "Do NOT write sentences that begin with 'You are' or 'You're' or 'You were'.",
+  "No status narration. No commentary about what the user is doing or feeling.",
   "Avoid therapy language, praise, hype, or clichés.",
   "No metaphors, no imagery, no breathing instructions.",
-  "Each sentence is plain and declarative.",
+  "Each sentence must be plain and declarative.",
   "No emojis. No exclamation marks."
 ].join(" ");
+
 
 const baseRulesEs = [
   `Escribe una declaración breve en la voz "Calm Operator".`,
@@ -341,6 +351,7 @@ const prompt =
         intentTextEs,
         bannedLineEs,
         nameRule,
+        nameExtraRule,
         "Devuelve SOLO el texto final, sin explicaciones adicionales."
       ].join("\n\n")
     : [
@@ -348,8 +359,10 @@ const prompt =
         intentTextEn,
         bannedLineEn,
         nameRule,
-        "Return ONLY the final text, no extra explanation."
+        nameExtraRule,
+        "Return ONLY the final text, no bullet points, no explanation."
       ].join("\n\n");
+
 
 
 
