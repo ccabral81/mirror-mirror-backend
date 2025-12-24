@@ -294,7 +294,7 @@ const bannedPhrasesEn = [
   "nervous system",
   "quiet awareness",
   "step by step",
-   "this situation",
+  "this situation",
   "the situation",
   "requires attention",
   "requires your attention",
@@ -309,7 +309,15 @@ const bannedPhrasesEn = [
   "current priority",
   "the current priority",
   "specific demands",
-  "provide clear information"
+  "provide clear information",
+  "the focus is on",
+  "the focus is",
+  "decisions need to be made",
+  "decisions need to be",
+  "actions taken now will",
+  "review what",
+  "note any",
+  "plan the next steps"
 ];
 
 const bannedLineEn = `Avoid these phrases entirely: ${bannedPhrasesEn
@@ -339,11 +347,13 @@ const baseRulesEn = [
   `Write exactly ${sentences} short sentence(s).`,
   "Be practical and composed.",
   "Each sentence must be short and direct.",
+  "Avoid making a list of small steps. Combine related ideas into fewer, stronger senteces.",
   "Prefer action and decision over emotion or description.",
   "Do NOT describe the user's mental state.",
   "Do NOT write sentences that begin with 'You are', 'You're', or 'You were'.",
   "Do NOT mention 'the situation', 'this situation', 'facts', 'information', 'assessment', or 'priority'.",
   "No status narration. No commentary about what the user is doing or feeling.",
+  "Do NOT invent specific physical situations, objects, devices, rooms, or locations. Speak in general terms only.",
   "Avoid therapy language, praise, hype, or clichés.",
   "No metaphors, no imagery, no breathing instructions.",
   "Each sentence must be plain and declarative.",
