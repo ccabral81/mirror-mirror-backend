@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@vercel/node": "^5.5.16",
     "openai": "^6.15.0"
   },
   "devDependencies": {
