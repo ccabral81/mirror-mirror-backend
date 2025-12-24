@@ -1,5 +1,37 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
+const OPENER_HISTORY = new Map<string, { items: string[]; resetAt: number }>();
+
+function pickNonRepeatingOpener(mode: DayMode, ip: string, bank: string[], keepLast = 20) {
+  const now = Date.now();
+  const key = `${ip}:${mode}`;
+  const cur = OPENER_HISTORY.get(key);
+
+  if (!cur || now > cur.resetAt) {
+    OPENER_HISTORY.set(key, { items: [], resetAt: now + 24 * 60 * 60 * 1000 });
+  }
+
+  const state = OPENER_HISTORY.get(key)!;
+
+  // Try a few times to avoid recent openers
+  for (let i = 0; i < 12; i++) {
+    const candidate = bank[Math.floor(Math.random() * bank.length)];
+    if (!state.items.includes(candidate)) {
+      state.items.unshift(candidate);
+      state.items = state.items.slice(0, keepLast);
+      OPENER_HISTORY.set(key, state);
+      return candidate;
+    }
+  }
+
+  // If bank is too small, accept
+  const fallback = bank[Math.floor(Math.random() * bank.length)];
+  state.items.unshift(fallback);
+  state.items = state.items.slice(0, keepLast);
+  OPENER_HISTORY.set(key, state);
+  return fallback;
+}
+
 /**
  * Mirror, Mirror — AI Affirmation endpoint (Vercel Function)
  * POST /api/affirmation
@@ -185,8 +217,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  const opener = pick(OPENER_BANK[mode]);
-  const firstSentence = includeName ? `${name}, ${opener.charAt(0).toLowerCase()}${opener.slice(1)}` : opener;
+  const openerRaw = pickNonRepeatingOpener(mode, ip, [...OPENER_BANK[mode]], 20);
+
+  const firstSentence = includeName ? `${name}, ${openerRaw.charAt(0).toLowerCase()}${openerRaw.slice(1)}` : openerRaw;
 
   const openerBan = "Do not start the first sentence with 'Today', 'You', 'This', or the user's name unless required. Avoid repeating any opener pattern.";
 
