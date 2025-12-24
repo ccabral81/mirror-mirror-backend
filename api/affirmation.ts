@@ -157,6 +157,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Name inclusion policy (35% unless mustIncludeName)
   const includeName = mustIncludeName ? true : Math.random() < 0.35;
 
+  const openerBan = "Do not start the first sentence with 'Today', 'You', 'This', or the user's name unless required. Avoid repeating any opener pattern.";
+
   const openerRulesEn = [
     "Vary the first word; do not start with 'Today' or 'You' every time.",
     "Do not reuse the same opening structure from prior requests.",
@@ -186,7 +188,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const prompt =
     language === "es"
       ? `Genera una afirmación breve para el usuario. Nombre: ${name}. Estilo: ${style}. Intención del momento del día: ${intent}. ${nameRule} ${constraints}`
-      : `Generate a brief affirmation for the user. Name: ${name}. Style: ${style}. Day-mode intent: ${intent}. ${nameRule} ${constraints} ${openerRulesEn}`;
+      : `Generate a brief affirmation for the user. Name: ${name}. Style: ${style}. Day-mode intent: ${intent}. ${nameRule} ${constraints} ${openerRulesEn} ${openerBan}`;
 
   try {
     const client = await getOpenAIClient(apiKey);
