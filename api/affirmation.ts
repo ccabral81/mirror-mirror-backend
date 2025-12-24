@@ -293,7 +293,23 @@ const bannedPhrasesEn = [
   "exhale",
   "nervous system",
   "quiet awareness",
-  "step by step"
+  "step by step",
+   "this situation",
+  "the situation",
+  "requires attention",
+  "requires your attention",
+  "requires clear attention",
+  "you have identified",
+  "you are identifying",
+  "you are at a point",
+  "you are here in this moment",
+  "information is being gathered",
+  "assessment of facts",
+  "assessment of",
+  "current priority",
+  "the current priority",
+  "specific demands",
+  "provide clear information"
 ];
 
 const bannedLineEn = `Avoid these phrases entirely: ${bannedPhrasesEn
@@ -322,9 +338,11 @@ const baseRulesEn = [
   `Write a short mirror statement in the "Calm Operator" voice.`,
   `Write exactly ${sentences} short sentence(s).`,
   "Be practical and composed.",
+  "Each sentence must be short and direct.",
   "Prefer action and decision over emotion or description.",
   "Do NOT describe the user's mental state.",
-  "Do NOT write sentences that begin with 'You are' or 'You're' or 'You were'.",
+  "Do NOT write sentences that begin with 'You are', 'You're', or 'You were'.",
+  "Do NOT mention 'the situation', 'this situation', 'facts', 'information', 'assessment', or 'priority'.",
   "No status narration. No commentary about what the user is doing or feeling.",
   "Avoid therapy language, praise, hype, or clichés.",
   "No metaphors, no imagery, no breathing instructions.",
