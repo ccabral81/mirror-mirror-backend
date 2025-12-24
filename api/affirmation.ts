@@ -116,10 +116,12 @@ function bool(x: unknown): boolean {
   return x === true;
 }
 
-function modeIntent(mode: DayMode) {
-  if (mode === "morning") return "orientation and gentle momentum for the day ahead";
-  if (mode === "afternoon") return "focus, execution, and calm momentum";
-  return "closure, reflection, and nervous-system calm";
+type Intent = "orient" | "act" | "close";
+
+function modeToIntent(mode: DayMode): Intent {
+  if (mode === "afternoon") return "orient";
+  if (mode === "evening") return "close";
+  return "act";
 }
 
 // --------------------
@@ -204,13 +206,62 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     "Let the middle of the day be steady, not rushed.",
     "Choose progress over perfection and move once.",
   ],
-  evening: [
-    "Let the day soften at the edges and come to a close.",
-    "Set down what you can’t finish tonight with quiet confidence.",
-    "Give yourself permission to end the day gently.",
-    "Close the loop on one thing, then release the rest.",
-    "Let your nervous system settle; you’ve done enough for today.",
+
+evening: [
+    "Tonight, you can set things down without losing momentum.",
+    "Let the day end cleanly, even if everything isn’t finished.",
+    "Choose a quiet ending, then step away on purpose.",
+    "Close one open loop, and let the rest wait with dignity.",
+    "Release the need to solve everything before rest.",
+    "Give your mind a clear stopping point.",
+    "Make peace with what was enough today.",
+    "Let completion be gentle, not perfect.",
+    "Put a soft boundary around work and let it end there.",
+    "Allow your attention to loosen its grip.",
+    "Return to simplicity and let the noise fade.",
+    "Let your shoulders drop and your jaw unclench.",
+    "Offer yourself a calm finish line.",
+    "End the day with one small act of closure.",
+    "Let the unfinished remain unfinished for now.",
+    "Tonight, choose ease over extra effort.",
+    "Mark the day as complete in your own way.",
+    "Let the pace slow without guilt.",
+    "Step out of problem-solving mode.",
+    "Allow rest to be the next decision.",
+    "Give your body permission to soften.",
+    "Let your thoughts come to a natural pause.",
+    "Choose a quiet reset for tomorrow.",
+    "Let the day close with clarity, not pressure.",
+    "Leave space for sleep by clearing one small thing.",
+    "Set down the mental checklist for now.",
+    "Allow the mind to settle into a simpler focus.",
+    "Finish with gratitude for effort, not outcomes.",
+    "Let what happened be what happened, and release the rest.",
+    "Turn down the internal volume and come back to the room.",
+    "Let the last hour be lighter than the day.",
+    "Choose stillness as a form of strength.",
+    "Let your next step be to stop.",
+    "End the evening with a clean, quiet exhale.",
+    "Let your attention return to the present moment.",
+    "Tonight, you don’t need to prove anything.",
+    "Let yourself be off-duty.",
+    "Close the day the way you’d close a door: gently and fully.",
+    "Allow the day to conclude without replaying it.",
+    "Let your mind unclutter as the night arrives.",
+    "Choose a softer focus and let it be enough.",
+    "Release urgency; there’s nothing to chase right now.",
+    "Let rest be intentional, not accidental.",
+    "Let your body know it’s safe to slow down.",
+    "Make room for sleep by letting go of one worry.",
+    "Let the day end without negotiation.",
+    "Set your intention for rest, then follow it.",
+    "Let your breathing guide you toward a quieter pace.",
+    "Choose a calm landing after a full day.",
+    "Let the day finish in one piece, even if it wasn’t perfect."
   ],
+
+
+
   } as const;
 
   function pick<T>(arr: readonly T[]) {
@@ -221,62 +272,85 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const firstSentence = includeName ? `${name}, ${openerRaw.charAt(0).toLowerCase()}${openerRaw.slice(1)}` : openerRaw;
 
-  const openerBan = "Do not start the first sentence with 'Today', 'You', 'This', or the user's name unless required. Avoid repeating any opener pattern.";
+const intent = modeToIntent(mode);
 
-  const openerRulesEn = [
-    "Vary the first word; do not start with 'Today' or 'You' every time.",
-    "Do not reuse the same opening structure from prior requests.",
-    "Prefer openers like: 'This morning', 'In this moment', 'Right now', 'As you begin', 'With a steady breath', 'Quietly', 'Gently', 'Step by step'."
-  ].join(" ");
+const nameRule = includeName
+  ? `Use the user's name "${name}" once in the first sentence, in a natural way.`
+  : `Do not use the user's name in this statement.`;
 
-  const style =
-    tone === "direct-calm"
-      ? "direct, calm, action-oriented, no hype"
-      : "luxury, calm, grounded, elegant, no hype";
+const bannedPhrasesEn = [
+  "breathe",
+  "breath",
+  "relax",
+  "gentle",
+  "soften",
+  "let go",
+  "exhale",
+  "nervous system",
+  "quiet awareness",
+  "step by step"
+];
 
-  const intent = modeIntent(mode);
+const bannedLineEn = `Avoid these phrases entirely: ${bannedPhrasesEn
+  .map((p) => `"${p}"`)
+  .join(", ")}.`;
 
-  const nameRule = includeName
-    ? "Include the user's name in the FIRST sentence."
-    : "Avoid using the user's name unless it fits naturally; prefer no name.";
+const intentTextEn =
+  intent === "orient"
+    ? "Focus on clarifying where the person is and what matters right now."
+    : intent === "act"
+    ? "Focus on recommending one clean, realistic next step."
+    : "Focus on helping the person end the day or close a loop on purpose.";
 
-  const constraints = [
-    `Write exactly ${sentences} sentences.`,
-    "No emojis.",
-    "No exclamation marks.",
-    "No clichés (e.g., 'you got this', 'believe in yourself').",
-    "No exaggerated praise or grand claims.",
-    "Keep it practical and calming.",
-  ].join(" ");
+// Spanish versions (simple for now)
+const bannedLineEs = `Evita completamente expresiones como: respirar, relájate, suavemente, soltar, exhalar, sistema nervioso.`;
 
-  const remaining = sentences === 2 ? 1 : 2;
+const intentTextEs =
+  intent === "orient"
+    ? "Enfócate en aclarar dónde está la persona y qué importa ahora."
+    : intent === "act"
+    ? "Enfócate en recomendar un siguiente paso claro y realista."
+    : "Enfócate en ayudar a cerrar el día o cerrar un pendiente de forma deliberada.";
 
-  const bannedPhrases = [
-    "with a steady breath",
-    "gently",
-    "step by step",
-    "quiet awareness",
-    "reflection offers clarity",
-    "measured sense of calm",
-    "thoughtful closure",
-    "let each exhale",
-    "grounding your intentions",
-  ];
+const baseRulesEn = [
+  `Write a short mirror statement in the "Calm Operator" voice.`,
+  `Write exactly ${sentences} short sentence(s).`,
+  "Be practical and composed.",
+  "Prefer action and decision over emotion and description.",
+  "Avoid therapy language, praise, hype, or clichés.",
+  "No metaphors, no imagery, no breathing instructions.",
+  "Each sentence is plain and declarative.",
+  "No emojis. No exclamation marks."
+].join(" ");
 
-  const banLine = `Avoid these phrases entirely: ${bannedPhrases.map(p => `"${p}"`).join(", ")}.`;
+const baseRulesEs = [
+  `Escribe una declaración breve en la voz "Calm Operator".`,
+  `Escribe exactamente ${sentences} oración(es) cortas.`,
+  "Sé práctico y sereno.",
+  "Prefiere acción y decisión sobre emoción o descripción.",
+  "Evita lenguaje terapéutico, elogios, exageraciones o clichés.",
+  "Sin metáforas, sin imágenes, sin instrucciones de respiración.",
+  "Cada oración debe ser simple y declarativa.",
+  "Sin emojis. Sin signos de exclamación."
+].join(" ");
 
-  const structureChoices = [
-    "Structure A: practical action → calming reframe → close.",
-    "Structure B: body cue → focus cue → close.",
-    "Structure C: simplify → commit → release.",
-    "Structure D: acknowledge → choose → settle."
-  ];
-  const structure = pick(structureChoices);
+const prompt =
+  language === "es"
+    ? [
+        baseRulesEs,
+        intentTextEs,
+        bannedLineEs,
+        nameRule,
+        "Devuelve SOLO el texto final, sin explicaciones adicionales."
+      ].join("\n\n")
+    : [
+        baseRulesEn,
+        intentTextEn,
+        bannedLineEn,
+        nameRule,
+        "Return ONLY the final text, no extra explanation."
+      ].join("\n\n");
 
-  const prompt =
-    language === "es"
-      ? `Escribe exactamente ${remaining} oración(es) para completar una afirmación. La primera oración ya está fijada y NO puedes cambiarla:\n"${firstSentence}"\n\n${structure}\n${banLine}\nSin emojis. Sin signos de exclamación. Sin clichés. Manténlo práctico y sereno. Devuelve SOLO el texto final con ${sentences} oraciones.`
-      : `Write exactly ${remaining} sentence(s) to complete an affirmation. The first sentence is fixed and you MUST NOT change it:\n"${firstSentence}"\n\n${structure}\n${banLine}\nNo emojis. No exclamation marks. No clichés. Keep it practical and calming. Return ONLY the final text with exactly ${sentences} sentences.`;
 
 
   try {
