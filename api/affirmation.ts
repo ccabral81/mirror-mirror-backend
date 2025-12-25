@@ -116,8 +116,6 @@ function bool(x: unknown): boolean {
   return x === true;
 }
 
-
-
 // --------------------
 // OpenAI client (dynamic import to avoid ESM/CJS issues)
 // --------------------
@@ -315,6 +313,14 @@ const bannedPhrasesEn = [
   "decisions need to be made",
   "decisions need to be",
   "actions taken now will",
+  "allow yourself",
+  "you made the",
+  "necessary choices",
+  "end this cycle",
+  "cycle now",
+  "clear intent",
+  "set a boundary",
+  "restore your energy",
 
   // Soft / poetic closers
   "let your thoughts",
@@ -384,6 +390,8 @@ const baseRulesEn = [
   "Each sentence must be short and direct.",
   "Avoid making a list of small steps. Combine related ideas into fewer, stronger sentences.",
   "Prefer action and decision over emotion or description.",
+  "Do NOT describe the user's mental state.",
+  "Do NOT praise, congratulate, or evaluate the user in any way.",
   "Do NOT describe the user's mental state.",
   "Do NOT write sentences that begin with 'You are', 'You're', or 'You were'.",
   "Do NOT mention 'the situation', 'this situation', 'facts', 'information', 'assessment', or 'priority'.",
