@@ -116,13 +116,7 @@ function bool(x: unknown): boolean {
   return x === true;
 }
 
-type Intent = "orient" | "act" | "close";
 
-function modeToIntent(mode: DayMode): Intent {
-  if (mode === "afternoon") return "orient";
-  if (mode === "evening") return "close";
-  return "act";
-}
 
 // --------------------
 // OpenAI client (dynamic import to avoid ESM/CJS issues)
@@ -259,9 +253,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     "Choose a calm landing after a full day.",
     "Let the day finish in one piece, even if it wasn’t perfect."
   ],
-
-
-
   } as const;
 
   function pick<T>(arr: readonly T[]) {
@@ -272,17 +263,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const firstSentence = includeName ? `${name}, ${openerRaw.charAt(0).toLowerCase()}${openerRaw.slice(1)}` : openerRaw;
 
-  const intent = modeToIntent(mode);
+  type Intent = "orient" | "act" | "close";
 
-  const nameRule = includeName
+function modeToIntent(mode: DayMode): Intent {
+  if (mode === "afternoon") return "orient";
+  if (mode === "evening") return "close";
+  return "act";
+}
+
+const intent = modeToIntent(mode);
+
+const nameRule = includeName
   ? `Use the user's name "${name}" once in the first sentence, in a natural way.`
   : `Do not use the user's name in this statement.`;
 
-  const nameExtraRule = includeName
-  ? "Use the name at most once and only in the first sentence. Never repeat the name in any other sentence. If the name does not fit naturally, omit it."
+const nameExtraRule = includeName
+  ? "Use the name at most once, only in the first sentence. Never repeat the name in later sentences. If the name does not fit naturally, omit it."
   : "";
 
-  const bannedPhrasesEn = [
+// English banned phrases: calm-app stuff, status narration, invented scenes, fluff
+const bannedPhrasesEn = [
+  // Calm app language
   "breathe",
   "breath",
   "relax",
@@ -293,6 +294,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   "nervous system",
   "quiet awareness",
   "step by step",
+
+  // Status / situation narration
   "this situation",
   "the situation",
   "requires attention",
@@ -314,44 +317,74 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   "decisions need to be made",
   "decisions need to be",
   "actions taken now will",
+
+  // Soft / poetic closers
   "let your thoughts",
   "let yourself",
   "let rest be intentional",
   "turn down the internal volume",
   "put a soft boundary",
   "finish line",
+  "with dignity",
+  "with grace",
+  "with ease",
+  "deliberate finality",
+  "gentle close",
+  "calm finish",
   "release the rest",
-  "offer yourself a calm finish line"
-  ];
 
-  const bannedLineEn = `Avoid these phrases entirely: ${bannedPhrasesEn
+  // Somatic coaching
+  "jaw unclench",
+  "let your shoulders",
+  "relax your",
+  "release tension",
+
+  // Invented physical scenes
+  "close folders",
+  "clear your workspace",
+  "shut down devices",
+  "room with",
+  "devices that need",
+  "keyboard",
+  "screen",
+  "desk",
+
+  // Meta / speaking as assistant
+  "speaking...",
+  "as an ai",
+  "assistant",
+  "listening",
+  "hearing you"
+];
+
+const bannedLineEn = `Avoid these phrases entirely: ${bannedPhrasesEn
   .map((p) => `"${p}"`)
   .join(", ")}.`;
 
-  const intentTextEn =
+const bannedLineEs =
+  "Evita completamente expresiones como: respirar, relájate, suavemente, soltar, exhalar, sistema nervioso.";
+
+const intentTextEn =
   intent === "orient"
     ? "Focus on clarifying where the person is and what matters right now."
     : intent === "act"
     ? "Focus on recommending one clean, realistic next step."
     : "Focus on helping the person end the day or close a loop on purpose.";
 
-// Spanish versions (simple for now)
-  const bannedLineEs = `Evita completamente expresiones como: respirar, relájate, suavemente, soltar, exhalar, sistema nervioso.`;
-
-  const intentTextEs =
+const intentTextEs =
   intent === "orient"
     ? "Enfócate en aclarar dónde está la persona y qué importa ahora."
     : intent === "act"
     ? "Enfócate en recomendar un siguiente paso claro y realista."
     : "Enfócate en ayudar a cerrar el día o cerrar un pendiente de forma deliberada.";
 
-  const baseRulesEn = [
+const baseRulesEn = [
   `Write a short mirror statement in the "Calm Operator" voice.`,
   `Write exactly ${sentences} short sentence(s).`,
   `Do NOT write more than ${sentences} sentences under any circumstance.`,
   "Be practical and composed.",
   "Each sentence must be short and direct.",
-  "Avoid making a list of small steps. Combine related ideas into fewer, stronger senteces.",
+  "Avoid making a list of small steps. Combine related ideas into fewer, stronger sentences.",
   "Prefer action and decision over emotion or description.",
   "Do NOT describe the user's mental state.",
   "Do NOT write sentences that begin with 'You are', 'You're', or 'You were'.",
@@ -362,9 +395,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   "No metaphors, no imagery, no breathing instructions.",
   "Each sentence must be plain and declarative.",
   "No emojis. No exclamation marks."
-  ].join(" ");
+].join(" ");
 
-  const baseRulesEs = [
+const baseRulesEs = [
   `Escribe una declaración breve en la voz "Calm Operator".`,
   `Escribe exactamente ${sentences} oración(es) cortas.`,
   "Sé práctico y sereno.",
@@ -373,9 +406,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   "Sin metáforas, sin imágenes, sin instrucciones de respiración.",
   "Cada oración debe ser simple y declarativa.",
   "Sin emojis. Sin signos de exclamación."
-  ].join(" ");
+].join(" ");
 
-  const prompt =
+const prompt =
   language === "es"
     ? [
         baseRulesEs,
