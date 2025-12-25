@@ -321,6 +321,16 @@ const bannedPhrasesEn = [
   "clear intent",
   "set a boundary",
   "restore your energy",
+  "take a moment",
+  "at hand",
+  "transitioning to rest",
+  "turn attention fully",
+  "next phase",
+  "current cycle",
+  "moving forward with what is next",
+  "prepare to start fresh tomorrow",  // if you want less repetition of this exact line
+  "focus toward rest",
+
 
   // Soft / poetic closers
   "let your thoughts",
@@ -391,6 +401,8 @@ const baseRulesEn = [
   "Avoid making a list of small steps. Combine related ideas into fewer, stronger sentences.",
   "Prefer action and decision over emotion or description.",
   "Do NOT describe the user's mental state.",
+  "Prefer concrete actions over abstractions like 'phase', 'cycle', or 'journey'.",
+  "Prefer action and decision over emotion or description.",
   "Do NOT praise, congratulate, or evaluate the user in any way.",
   "Do NOT describe the user's mental state.",
   "Do NOT write sentences that begin with 'You are', 'You're', or 'You were'.",
