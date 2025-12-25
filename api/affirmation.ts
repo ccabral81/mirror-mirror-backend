@@ -350,6 +350,20 @@ const bannedPhrasesEn = [
   "disengaging",
   "downtime",
 
+  "stop all ongoing",
+  "stop all current",
+  "immediately",
+  "complete rest",
+  "state of rest",
+  "unshared period",
+  "stillness",
+  "disconnect completely",
+  "close operations",
+  "temporary data",
+  "operations",
+  "non-productive activities",
+  "active engagements",
+
 
   // Soft / poetic closers
   "let your thoughts",
@@ -402,7 +416,7 @@ const intentTextEn =
     ? "Focus on clarifying where the person is and what matters right now."
     : intent === "act"
     ? "Focus on recommending one clean, realistic next step."
-    : "Focus on ending the current period on purpose. Avoid referring specifically to work. Keep statements general and applicable to any kind of day.";
+    : "Focus on choosing a stopping point and ending the day on purpose, without urgency or extreme language.";
 
 const intentTextEs =
   intent === "orient"
@@ -426,6 +440,7 @@ const baseRulesEn = [
   "Do NOT describe the user's mental state.",
   "Do NOT write sentences that begin with 'You are', 'You're', or 'You were'.",
   "Do NOT mention 'the situation', 'this situation', 'facts', 'information', 'assessment', or 'priority'.",
+  "Do NOT use extreme or absolute commands like 'immediately', 'completely', or 'totally'.",
   "No status narration. No commentary about what the user is doing or feeling.",
   "Do NOT invent specific physical situations, objects, devices, rooms, or locations. Speak in general terms only.",
   "Avoid therapy language, praise, hype, or clichés.",
