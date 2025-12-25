@@ -41,7 +41,7 @@ function pickNonRepeatingOpener(mode: DayMode, ip: string, bank: string[], keepL
  * - Loads OpenAI SDK via dynamic import to avoid ESM/CJS runtime crashes
  */
 
-type DayMode = "morning" | "afternoon" | "evening";
+type DayMode = "morning" | "afternoon" | "evening" | "bedtime";
 type Tone = "luxury-calm" | "direct-calm";
 
 type AffirmationRequest = {
@@ -103,10 +103,13 @@ function clampTone(x: unknown): Tone {
 }
 
 function clampMode(x: unknown): DayMode {
+  if (x === "morning") return "morning";
   if (x === "afternoon") return "afternoon";
   if (x === "evening") return "evening";
-  return "morning";
+  if (x === "bedtime") return "bedtime";
+  return "morning"; // fallback
 }
+
 
 function clampLanguage(x: unknown): "en" | "es" {
   return x === "es" ? "es" : "en";
@@ -251,6 +254,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     "Choose a calm landing after a full day.",
     "Let the day finish in one piece, even if it wasn’t perfect."
   ],
+
+  bedtime: [
+    "Let the day come to an end on purpose.",
+    "Close the day with a clear stopping point.",
+    "Let what is unfinished wait until tomorrow.",
+    "End the day without adding anything more to it.",
+    "Allow the day to be complete as it is.",
+    "Mark the end of today and set it down.",
+    "Choose a point to stop, and let it be enough.",
+    "Let the night begin and the day conclude.",
+    "Bring the day to a quiet close.",
+    "Let the last thing you do be to stop.",
+  ],
+
   } as const;
 
   function pick<T>(arr: readonly T[]) {
@@ -259,13 +276,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
 const openerRaw = pickNonRepeatingOpener(mode, ip, [...OPENER_BANK[mode]], 20);
 
-  type Intent = "orient" | "act" | "close";
+  type Intent = "orient" | "act" | "close" | "rest";
 
 function modeToIntent(mode: DayMode): Intent {
-  if (mode === "afternoon") return "orient";
-  if (mode === "evening") return "close";
-  return "act";
+  switch (mode) {
+    case "morning":
+      return "orient";   // point direction
+    case "afternoon":
+      return "act";      // do the thing
+    case "evening":
+      return "close";    // wind down / close loops
+    case "bedtime":
+      return "rest";     // step away fully
+    default:
+      return "orient";
+  }
 }
+
 
 const intent = modeToIntent(mode);
 
