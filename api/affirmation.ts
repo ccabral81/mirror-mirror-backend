@@ -364,6 +364,14 @@ const bannedPhrasesEn = [
   "non-productive activities",
   "active engagements",
 
+  "stop work",
+  "close applications",
+  "materials",
+  "evening activities",
+  "firm stopping point",
+  "stop what you are doing",
+  "ongoing activity",
+  "current efforts",
 
   // Soft / poetic closers
   "let your thoughts",
@@ -441,6 +449,7 @@ const baseRulesEn = [
   "Do NOT write sentences that begin with 'You are', 'You're', or 'You were'.",
   "Do NOT mention 'the situation', 'this situation', 'facts', 'information', 'assessment', or 'priority'.",
   "Do NOT use extreme or absolute commands like 'immediately', 'completely', or 'totally'.",
+  "Do NOT mention computers, phones, apps, or software actions like closing applications or turning devices off.",
   "No status narration. No commentary about what the user is doing or feeling.",
   "Do NOT invent specific physical situations, objects, devices, rooms, or locations. Speak in general terms only.",
   "Avoid therapy language, praise, hype, or clichés.",
