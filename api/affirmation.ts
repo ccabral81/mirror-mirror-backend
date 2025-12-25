@@ -259,9 +259,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  const openerRaw = pickNonRepeatingOpener(mode, ip, [...OPENER_BANK[mode]], 20);
-
-  const firstSentence = includeName ? `${name}, ${openerRaw.charAt(0).toLowerCase()}${openerRaw.slice(1)}` : openerRaw;
+const openerRaw = pickNonRepeatingOpener(mode, ip, [...OPENER_BANK[mode]], 20);
 
   type Intent = "orient" | "act" | "close";
 
@@ -441,12 +439,6 @@ const prompt =
     if (!text) {
       return res.status(502).json({ error: "Empty response from model" });
     }
-
-    // Ensure the fixed opener is the first sentence
-    // (belt + suspenders in case the model omits or alters it)
-    if (!text.startsWith(firstSentence)) {
-      text = `${firstSentence} ${text}`.trim();
-    }    
 
     const result: AffirmationResult = {
       text,
