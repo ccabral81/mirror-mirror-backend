@@ -274,7 +274,7 @@ const nameRule = includeName
   : `Do not use the user's name in this statement.`;
 
 const nameExtraRule = includeName
-  ? "Use the name at most once, only in the first sentence. Never repeat the name in later sentences. If the name does not fit naturally, omit it."
+  ? "Use the name exactly once in the first sentence only. Do NOT repeat the name anywhere else, and do not invent new nicknames."
   : "";
 
 // English banned phrases: calm-app stuff, status narration, invented scenes, fluff
@@ -331,6 +331,25 @@ const bannedPhrasesEn = [
   "prepare to start fresh tomorrow",  // if you want less repetition of this exact line
   "focus toward rest",
 
+  
+  "work",
+  "workspace",
+  "work-related",
+  "equipment",
+  "systems",
+  "tools",
+  "materials",
+  "documents",
+  "notifications",
+  "connections",
+  "power down",
+  "shut down work",
+  "prepare the environment",
+  "prepare the space",
+  "step away from responsibilities",
+  "disengaging",
+  "downtime",
+
 
   // Soft / poetic closers
   "let your thoughts",
@@ -383,7 +402,7 @@ const intentTextEn =
     ? "Focus on clarifying where the person is and what matters right now."
     : intent === "act"
     ? "Focus on recommending one clean, realistic next step."
-    : "Focus on helping the person end the day or close a loop on purpose.";
+    : "Focus on ending the current period on purpose. Avoid referring specifically to work. Keep statements general and applicable to any kind of day.";
 
 const intentTextEs =
   intent === "orient"
