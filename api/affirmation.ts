@@ -515,6 +515,7 @@ const baseRulesEs = [
   "NO narres lo que el usuario está haciendo en este momento.",
   "NO inventes situaciones físicas específicas, objetos, dispositivos, habitaciones, mesas, documentos, correos electrónicos o pantallas.",
   "NO uses lenguaje terapéutico, elogios, hype ni clichés.",
+  "NO uses la primera persona ('yo', 'me', 'mi', 'conozco', 'reconozco', 'dejo') ni hables como si fueras quien está tomando la decisión.",
   "NO menciones 'la situación', 'esta situación', 'hechos', 'información', 'evaluación' o 'prioridad'.",
   "NO uses órdenes extremas o absolutas como 'inmediatamente', 'completamente' o 'totalmente'.",
   "NO menciones computadoras, teléfonos, aplicaciones ni acciones de software como cerrar aplicaciones o apagar dispositivos.",
@@ -647,6 +648,20 @@ const bannedPhrasesEs = [
   "decide un punto específico",
   "elige un punto claro para avanzar",
   "toma nota de lo que necesitas abordar",
+
+    // primera persona / voz del asistente
+  "reconozco tu forma de cerrar",
+  "reconozco tu manera de cerrar",
+  "reconozco lo que está presente",
+  "dejo espacio para el siguiente instante",
+  "no me comprometo más allá de esto",
+
+  // cierres blandos / ruido / espacio (si quieres ser más estricto)
+  "espacio se mantiene intacto",
+  "dejas espacio",
+  "se deja atrás sin ruido",
+  "espacio vuelve a ser tuyo",
+  "no hay más que procesar ahora", // por si se cuela de nuevo
 ];
 
 const TASKY_VERBS_ES = [
@@ -706,16 +721,23 @@ const CALM_SILENCE_ES = [
   "ruido externo",
 ];
 
+const FIRST_PERSON_ES = [
+  "reconozco ",
+  "reconozco tu",
+  "dejo espacio",
+  "no me comprometo",
+];
+
 function isTaskySpanishOutput(text: string): boolean {
   const t = text.toLowerCase();
   return (
     TASKY_VERBS_ES.some((w) => t.includes(w)) ||
     TASKY_NOUNS_ES.some((w) => t.includes(w)) ||
     SOFT_VALIDATION_ES.some((w) => t.includes(w)) ||
-    CALM_SILENCE_ES.some((w) => t.includes(w))
+    CALM_SILENCE_ES.some((w) => t.includes(w)) ||
+    FIRST_PERSON_ES.some((w) => t.includes(w))
   );
 }
-
 
 const bannedLineEs = `Evita completamente expresiones como: ${bannedPhrasesEs
   .map((p) => `"${p}"`)
