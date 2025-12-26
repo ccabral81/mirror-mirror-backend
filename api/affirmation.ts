@@ -515,6 +515,7 @@ const baseRulesEs = [
   "NO narres lo que el usuario está haciendo en este momento.",
   "NO inventes situaciones físicas específicas, objetos, dispositivos, habitaciones, mesas, documentos, correos electrónicos o pantallas.",
   "NO uses lenguaje terapéutico, elogios, hype ni clichés.",
+  "NO hables de 'ciclos', 'capítulos', 'historias' ni del 'momento' como si fuera algo que se abre o se cierra.",
   "NO uses la primera persona ('yo', 'me', 'mi', 'conozco', 'reconozco', 'dejo') ni hables como si fueras quien está tomando la decisión.",
   "NO menciones 'la situación', 'esta situación', 'hechos', 'información', 'evaluación' o 'prioridad'.",
   "NO uses órdenes extremas o absolutas como 'inmediatamente', 'completamente' o 'totalmente'.",
@@ -662,6 +663,23 @@ const bannedPhrasesEs = [
   "se deja atrás sin ruido",
   "espacio vuelve a ser tuyo",
   "no hay más que procesar ahora", // por si se cuela de nuevo
+
+    // cierres blandos / metáforas de ciclo / historia / momento
+  "cierra este ciclo",
+  "cerrar este ciclo",
+  "ciclo",
+  "cerrar el capítulo",
+  "capítulo",
+  "lo que sigue es otra historia",
+  "este momento termina aquí",
+  "el momento se cierra",
+  "el momento se detiene aquí",
+  "todo queda en pausa",
+
+  // procesamiento / carga
+  "lo que no se atiende ahora no desaparece",
+  "no debe cargar más",
+
 ];
 
 const TASKY_VERBS_ES = [
@@ -719,6 +737,9 @@ const CALM_SILENCE_ES = [
   "silencio también es una decisión",
   "el silencio es una decisión firme",
   "ruido externo",
+  "todo queda en pausa",
+  "el momento se detiene aquí",
+  "el momento se cierra",
 ];
 
 const FIRST_PERSON_ES = [
@@ -728,6 +749,15 @@ const FIRST_PERSON_ES = [
   "no me comprometo",
 ];
 
+const CYCLE_META_ES = [
+  "cerrar este ciclo",
+  "cierra este ciclo",
+  "ciclo",
+  "cerrar el capítulo",
+  "capítulo",
+  "otra historia",
+];
+
 function isTaskySpanishOutput(text: string): boolean {
   const t = text.toLowerCase();
   return (
@@ -735,7 +765,8 @@ function isTaskySpanishOutput(text: string): boolean {
     TASKY_NOUNS_ES.some((w) => t.includes(w)) ||
     SOFT_VALIDATION_ES.some((w) => t.includes(w)) ||
     CALM_SILENCE_ES.some((w) => t.includes(w)) ||
-    FIRST_PERSON_ES.some((w) => t.includes(w))
+    FIRST_PERSON_ES.some((w) => t.includes(w)) ||
+    CYCLE_META_ES.some((w) => t.includes(w))
   );
 }
 
