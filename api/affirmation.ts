@@ -465,6 +465,13 @@ const bannedPhrasesEn = [
   "cannot be crossed",
   "builds a boundary",
   "silence becomes",
+  "this moment ends here",
+  "this moment is a clear point of pause",
+  "the moment ends here",
+  "this moment is marked by",
+  "this day ends here",
+  "the day ends here",
+  "this day is now closed",
 ];
 
 const METAPHOR_EN = [
@@ -477,6 +484,13 @@ const METAPHOR_EN = [
   "exposure",
   "journey",
   "path",
+  "refuge",
+  "perimeter",
+  "private edge",
+  "guarded stances",
+  "shape of self",
+  "world narrows",
+  "contracts inward",
 ];
 
 const EMOTIONAL_STATE_EN = [
@@ -487,21 +501,40 @@ const EMOTIONAL_STATE_EN = [
   "too much to handle",
   "heavy to carry",
   "emotional burden",
+  "beyond your comfort",
+  "demands too much",
+  "demand too much",
+  "feels intrusive",
+  "what feels intrusive",
+  "when complexity grows",
+  "before confusion sets in",
+  "when the world demands too much",
+  "when situations demand too much",
+  
 ];
+
+const CLOSURE_EN = [
+  "this moment ends here",
+  "this day ends here",
+  "this moment is a clear point of pause",
+  "the moment is closed",
+];
+
 
 const intentTextEn =
   intent === "orient"
     ? "Reflect how the person tends to orient themselves and what currently matters in their stance, not tasks."
     : intent === "act"
     ? "Reflect how the person tends to act and make decisions, without listing tasks or giving instructions."
-    : "Reflect how the person tends to close or step away, without rest instructions, task lists, or soothing language.";
+    : "Reflect how the person relates to limits, distance, and stepping back, without saying that this specific day or moment is ending.";
 
 const intentTextEs =
   intent === "orient"
     ? "Refleja cómo la persona suele orientarse y qué importa ahora en su postura, no en tareas."
     : intent === "act"
     ? "Refleja cómo la persona suele actuar y decidir, sin listar tareas ni dar instrucciones."
-    : "Refleja cómo la persona suele cerrar o tomar distancia, sin instrucciones de descanso, listas de tareas ni lenguaje de consuelo.";
+    : "Refleja cómo la persona se relaciona con los límites, la distancia y el tomar espacio, sin decir que este día o este momento se cierran.";
+
 
 
 const baseRulesEn = [
@@ -523,6 +556,10 @@ const baseRulesEn = [
   "Do NOT explain what you are doing. Return only the final statement.",
   "Do NOT use metaphors such as shields, lines, walls, roads, journeys, or stories.",
   "Do NOT describe how things 'feel' or whether something is overwhelming, heavy, or too much.",
+  "Do NOT use metaphors like shields, walls, edges, perimeters, cores, or journeys.",
+  "Do NOT describe how things feel (overwhelming, too much, intrusive, confusing, heavy).",
+  "Do NOT narrate that 'this day' or 'this moment' is ending, closing, or stopping here.",
+  "Do NOT talk about closing cycles, chapters, or stories.",
   "Sentences must be short, plain, and declarative.",
   "No emojis. No exclamation marks.",
   "Do not overuse 'You are' phrasing; vary structure naturally, but it is allowed.",
@@ -548,6 +585,8 @@ const baseRulesEs = [
   "NO hables de calma interna, ruido externo, silencio interno, silencio como refugio ni cierres de 'ciclos' o 'capítulos'.",
   "NO uses lenguaje de procesamiento emocional como 'procesar lo que pasó' o 'procesar ahora'.",
   "NO narres lo que el usuario está haciendo en este momento.",
+  "NO narres que 'este día' o 'este momento' terminan, se cierran o se detienen aquí.",
+  "NO hables de 'ciclos', 'capítulos', 'historias' ni del 'momento' como algo que se abre o se cierra.",
   "NO inventes situaciones físicas específicas, objetos, dispositivos, habitaciones, mesas, documentos, correos electrónicos o pantallas.",
   "NO uses lenguaje terapéutico, elogios, hype ni clichés.",
   "NO hables de 'ciclos', 'capítulos', 'historias' ni del 'momento' como si fuera algo que se abre o se cierra.",
@@ -722,6 +761,14 @@ const bannedPhrasesEs = [
   // procesamiento / carga
   "lo que no se atiende ahora no desaparece",
   "no debe cargar más",
+  "este momento termina aquí",
+  "este momento se concluye aquí",
+  "el momento se concluye",
+  "el momento se detiene",
+  "el tiempo para esto ha concluido",
+  "este día termina aquí",
+  "este día se cierra aquí",
+
 
 ];
 
@@ -807,6 +854,13 @@ const EMO_LOAD_ES = [
   "se guarda en la memoria",
 ];
 
+const CLOSURE_ES = [
+  "este momento termina aquí",
+  "este momento se concluye",
+  "el momento se detiene aquí",
+  "el tiempo para esto ha concluido",
+];
+
 function isBadEnglishOutput(text: string): boolean {
   const t = text.toLowerCase();
 
@@ -827,7 +881,8 @@ function isTaskySpanishOutput(text: string): boolean {
     CALM_SILENCE_ES.some((w) => t.includes(w)) ||
     FIRST_PERSON_ES.some((w) => t.includes(w)) ||
     CYCLE_META_ES.some((w) => t.includes(w)) ||
-    EMO_LOAD_ES.some((w) => t.includes(w))
+    EMO_LOAD_ES.some((w) => t.includes(w)) ||
+    CLOSURE_ES.some((w) => t.includes(w))
   );
 }
 
