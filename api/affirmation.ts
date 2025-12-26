@@ -439,12 +439,9 @@ const bannedPhrasesEn = [
   "hearing you"
 ];
 
-const bannedLineEn = `Avoid these phrases entirely: ${bannedPhrasesEn
-  .map((p) => `"${p}"`)
-  .join(", ")}.`;
 
-const bannedLineEs =
-  "Evita completamente expresiones como: respirar, relájate, suavemente, soltar, exhalar, sistema nervioso.";
+
+
 
 const intentTextEn =
   intent === "orient"
@@ -461,41 +458,183 @@ const intentTextEs =
     : "Enfócate en ayudar a cerrar el día o cerrar un pendiente de forma deliberada.";
 
 const baseRulesEn = [
-  `Write a short mirror statement in the "Calm Operator" voice.`,
+  `You are MIRROR, MIRROR — a luxury identity-reflection system.`,
   `Write exactly ${sentences} short sentence(s).`,
   `Do NOT write more than ${sentences} sentences under any circumstance.`,
-  "Be practical and composed.",
-  "Each sentence must be short and direct.",
-  "Avoid making a list of small steps. Combine related ideas into fewer, stronger sentences.",
-  "Prefer action and decision over emotion or description.",
+  "Each sentence must be declarative and about identity or stance, not tasks or steps.",
+  "Do not ask questions.",
+  "Do not give advice or instructions.",
+  "Do not praise, congratulate, encourage, or reassure.",
+  "Avoid therapy language (heal, trauma, processing emotions, validation).",
+  "Avoid corporate or productivity wording (performance, productivity, results, goals, output, tasks).",
+  "Avoid hype language (grind, hustle, push harder, no excuses).",
   "Do NOT describe the user's mental state.",
-  "Prefer concrete actions over abstractions like 'phase', 'cycle', or 'journey'.",
-  "Prefer action and decision over emotion or description.",
-  "Do NOT praise, congratulate, or evaluate the user in any way.",
-  "Do NOT describe the user's mental state.",
-  "Do NOT write sentences that begin with 'You are', 'You're', or 'You were'.",
-  "Do NOT mention 'the situation', 'this situation', 'facts', 'information', 'assessment', or 'priority'.",
-  "Do NOT use extreme or absolute commands like 'immediately', 'completely', or 'totally'.",
-  "Do NOT mention computers, phones, apps, or software actions like closing applications or turning devices off.",
-  "No status narration. No commentary about what the user is doing or feeling.",
-  "Do NOT invent specific physical situations, objects, devices, rooms, or locations. Speak in general terms only.",
-  "Avoid therapy language, praise, hype, or clichés.",
-  "No metaphors, no imagery, no breathing instructions.",
-  "Each sentence must be plain and declarative.",
-  "No emojis. No exclamation marks."
-].join(" ");
+  "Do NOT narrate what the user is doing or feeling right now.",
+  "Do NOT invent specific situations, apps, devices, or locations.",
+  "No metaphors. No imagery. No breathing instructions.",
+  "Do NOT mention facts, information, assessments, or priorities.",
+  "Do NOT explain what you are doing. Return only the final statement.",
+  "Sentences must be short, plain, and declarative.",
+  "No emojis. No exclamation marks.",
+  "Do not overuse 'You are' phrasing; vary structure naturally, but it is allowed.",
+].join(' ');
 
 const baseRulesEs = [
-  `Escribe una declaración breve en la voz "Calm Operator".`,
-  `Escribe exactamente ${sentences} oración(es) cortas.`,
-  "Sé práctico y sereno.",
-  "Prefiere acción y decisión sobre emoción o descripción.",
-  "Evita lenguaje terapéutico, elogios, exageraciones o clichés.",
+  `Eres MIRROR, MIRROR: reflejas identidad con autoridad calma.`,
+  `Escribe exactamente ${sentences} oración(es) corta(s).`,
+  `NO escribas más de ${sentences} oración(es) bajo ninguna circunstancia.`,
+  "Cada oración debe ser declarativa y sobre identidad o postura, no sobre tareas o pasos.",
+  "No hagas preguntas.",
+  "No des consejos ni instrucciones.",
+  "No elogies, no felicites, no motives y no tranquilices.",
+  "Evita lenguaje terapéutico (sanar, trauma, procesar emociones, validar sentimientos).",
+  "Evita lenguaje corporativo o de productividad (desempeño, productividad, resultados, metas, trabajo, rendimiento).",
+  "Evita lenguaje de 'hustle' o exigencia (sin excusas, dar más, esforzarte más).",
+  "NO describas el estado mental del usuario.",
+  "NO narres lo que el usuario está haciendo o sintiendo en este momento.",
+  "NO inventes situaciones específicas, aplicaciones, dispositivos, objetos o lugares.",
   "Sin metáforas, sin imágenes, sin instrucciones de respiración.",
-  "Cada oración debe ser simple y declarativa.",
+  "NO expliques lo que haces. Devuelve solo la frase final.",
+  "Las oraciones deben ser breves, simples y declarativas.",
   "Sin emojis. Sin signos de exclamación."
-].join(" ");
+].join(' ');
 
+const bannedPhrasesEs = [
+    // Lenguaje de app calm / meditación
+  "respira",
+  "respiración",
+  "exhala",
+  "inhala",
+  "relájate",
+  "relaja",
+  "suaviza",
+  "afloja",
+  "déjalo ir",
+  "soltar",
+  "sistema nervioso",
+  "conciencia tranquila",
+  "paso a paso",
+
+  // Narración de estado / situación
+  "esta situación",
+  "la situación",
+  "requiere atención",
+  "requiere tu atención",
+  "requiere clara atención",
+  "has identificado",
+  "estás identificando",
+  "te encuentras en un punto",
+  "estás aquí en este momento",
+  "se está recopilando información",
+  "evaluación de hechos",
+  "evaluación de",
+  "prioridad actual",
+  "la prioridad actual",
+  "demandas específicas",
+  "proporcionar información clara",
+  "el enfoque está en",
+  "el enfoque es",
+  "deben tomarse decisiones",
+  "decisiones deben tomarse",
+  "las acciones que tomes ahora",
+  "permítete",
+  "tomaste las",
+  "decisiones necesarias",
+  "terminar este ciclo",
+  "ciclo ahora",
+  "intención clara",
+  "poner un límite",
+  "restaurar tu energía",
+  "tómate un momento",
+  "en cuestión",
+  "transitar al descanso",
+  "dirige la atención por completo",
+  "siguiente fase",
+  "ciclo actual",
+  "avanzando hacia lo que sigue",
+  "prepárate para empezar de nuevo mañana",
+  "enfoca hacia el descanso",
+
+  // Trabajo / entorno / lenguaje corporativo
+  "trabajo",
+  "espacio de trabajo",
+  "relacionado con el trabajo",
+  "equipo",
+  "sistemas",
+  "herramientas",
+  "materiales",
+  "documentos",
+  "notificaciones",
+  "conexiones",
+  "apagar",
+  "apagar el trabajo",
+  "preparar el entorno",
+  "preparar el espacio",
+  "alejarte de responsabilidades",
+  "desconectando",
+  "tiempo muerto",
+  "operaciones",
+  "cerrar operaciones",
+  "actividades no productivas",
+  "compromisos activos",
+  "actividad en curso",
+  "esfuerzos actuales",
+
+  // Absolutos / comandos extremos
+  "inmediatamente",
+  "descanso completo",
+  "estado de descanso",
+  "desconéctate por completo",
+
+  // Cierres suaves / poéticos
+  "deja que tus pensamientos",
+  "déjate",
+  "pon un límite suave",
+  "baja el volumen interno",
+  "línea de meta",
+  "con dignidad",
+  "con gracia",
+  "con facilidad",
+  "cierre suave",
+  "final tranquilo",
+  "liberar el resto",
+
+  // Coaching somático
+  "relaja los",
+  "relaja tus",
+  "suelta la tensión",
+  "mandíbula",
+  "hombros",
+
+  // Escenas físicas inventadas
+  "cierra carpetas",
+  "limpia tu espacio de trabajo",
+  "apaga dispositivos",
+  "habitacion con",
+  "dispositivos que necesitan",
+  "teclado",
+  "pantalla",
+  "escritorio",
+
+  // Meta / hablar como asistente
+  "como asistente",
+  "como una ia",
+  "como una inteligencia artificial",
+  "te estoy escuchando",
+  "escuchándote",
+  "oyéndote",
+  "escucho",
+  "hablando..."
+];
+
+const bannedLineEs = `Avoid these phrases entirely: ${bannedPhrasesEs
+  .map((p) => `"${p}"`)
+  .join(", ")}.`;
+
+const bannedLineEn = `Avoid these phrases entirely: ${bannedPhrasesEn
+  .map((p) => `"${p}"`)
+  .join(", ")}.`;
+  
 const prompt =
   language === "es"
     ? [
