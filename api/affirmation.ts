@@ -186,7 +186,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Name inclusion policy (35% unless mustIncludeName)
   const includeName = mustIncludeName ? true : Math.random() < 0.35;
 
-  //testing this line for changes
+  //testing this line for
 
   type Intent = "orient" | "act" | "close" | "rest";
 
@@ -501,15 +501,16 @@ const baseRulesEs = [
   "Evita hacer una lista de pequeños pasos. Combina ideas relacionadas en menos oraciones, más firmes.",
   "Prefiere postura y decisión sobre emoción o descripción.",
   "NO describas el estado mental del usuario.",
-  // ⬇️ NUEVO: bloquear lenguaje de tareas / objetivos
-  "NO hables de tareas, objetivos, plazos, periodos, recursos, asistencia, listas, impacto, resultados ni productividad.",
   "NO narres lo que el usuario está haciendo en este momento.",
-  "NO inventes situaciones físicas específicas, objetos, dispositivos, habitaciones, mesas, documentos, correos electrónicos o pantallas.",
+  "NO inventes escenas físicas concretas: nada de salas, habitaciones, mesas, escritorios, sofás, oficinas, documentos, correos electrónicos, pantallas ni dispositivos.",
+  "NO hables de 'entorno', 'espacio','lugar', 'momento presente', 'intimidad con el momento' ni 'elección consciente'.",
+  "NO uses verbos en modo imperativo como 'actúa', 'opta', 'elige', 'tómate un momento', 'debes', 'deberías'.",
   "NO uses lenguaje terapéutico, elogios, hype ni clichés.",
+  "No asumas que el usuario esta trabajando o ejecutando tareas",
   "NO menciones 'la situación', 'esta situación', 'hechos', 'información', 'evaluación' o 'prioridad'.",
   "NO uses órdenes extremas o absolutas como 'inmediatamente', 'completamente' o 'totalmente'.",
   "NO menciones computadoras, teléfonos, aplicaciones ni acciones de software como cerrar aplicaciones o apagar dispositivos.",
-  "Sin metáforas, sin imágenes, sin instrucciones de respiración.",
+  "Sin metáforas, sin imaginacion, sin instrucciones de respiración.",
   "Cada oración debe ser simple y declarativa.",
   "Sin emojis. Sin signos de exclamación."
 ].join(" ");
@@ -520,53 +521,130 @@ const bannedPhrasesEs = [
   "respira",
   "respiración",
   "exhala",
+  "inhala",
   "relájate",
+  "relaja",
+  "suaviza",
+  "afloja",
   "déjalo ir",
-  "momento presente",
-  "intimidad con el momento",
+  "soltar",
+  "sistema nervioso",
+  "conciencia tranquila",
+  "paso a paso",
 
-  // tareas / objetivos / productividad
-  "tarea",
-  "tareas",
-  "objetivo",
-  "objetivos",
-  "plazo",
-  "plazos",
-  "periodo",
-  "período",
-  "recurso",
-  "recursos",
-  "asistencia",
-  "lista",
-  "listado",
-  "impacto",
-  "resultados",
-  "productividad",
-  "disciplina",       // opcional si se vuelve muy coach
+  // Narración de estado / situación
+  "esta situación",
+  "la situación",
+  "requiere atención",
+  "requiere tu atención",
+  "requiere clara atención",
+  "has identificado",
+  "estás identificando",
+  "te encuentras en un punto",
+  "estás aquí en este momento",
+  "se está recopilando información",
+  "evaluación de hechos",
+  "evaluación de",
+  "prioridad actual",
+  "la prioridad actual",
+  "demandas específicas",
+  "proporcionar información clara",
+  "el enfoque está en",
+  "el enfoque es",
+  "deben tomarse decisiones",
+  "decisiones deben tomarse",
+  "las acciones que tomes ahora",
+  "permítete",
+  "tomaste las",
+  "decisiones necesarias",
+  "terminar este ciclo",
+  "ciclo ahora",
+  "intención clara",
+  "poner un límite",
+  "restaurar tu energía",
+  "tómate un momento",
+  "en cuestión",
+  "transitar al descanso",
+  "dirige la atención por completo",
+  "siguiente fase",
+  "ciclo actual",
+  "avanzando hacia lo que sigue",
+  "prepárate para empezar de nuevo mañana",
+  "enfoca hacia el descanso",
 
-  // comandos típicos de coach
-  "define un objetivo",
-  "define un objetivo claro",
-  "establece un límite de tiempo",
-  "prioriza una acción concreta",
-  "reserva tiempo",
-  "organiza ese listado",
-  "ajusta tu enfoque",
-  "mantén el enfoque",
-  "ejecuta esa acción",
-  "completa esa tarea",
-  "procede con ese paso",
-
-  // escenas / objetos
-  "sala",
-  "mesa",
-  "escritorio",
+  // Trabajo / entorno / lenguaje corporativo
+  "trabajo",
+  "espacio de trabajo",
+  "relacionado con el trabajo",
+  "equipo",
+  "sistemas",
+  "herramientas",
+  "materiales",
   "documentos",
-  "correo electrónico",
+  "notificaciones",
+  "conexiones",
+  "apagar",
+  "apagar el trabajo",
+  "preparar el entorno",
+  "preparar el espacio",
+  "alejarte de responsabilidades",
+  "desconectando",
+  "tiempo muerto",
+  "operaciones",
+  "cerrar operaciones",
+  "actividades no productivas",
+  "compromisos activos",
+  "actividad en curso",
+  "esfuerzos actuales",
+
+  // Absolutos / comandos extremos
+  "inmediatamente",
+  "descanso completo",
+  "estado de descanso",
+  "desconéctate por completo",
+
+  // Cierres suaves / poéticos
+  "deja que tus pensamientos",
+  "déjate",
+  "pon un límite suave",
+  "baja el volumen interno",
+  "línea de meta",
+  "con dignidad",
+  "con gracia",
+  "con facilidad",
+  "cierre suave",
+  "final tranquilo",
+  "liberar el resto",
+
+  // Coaching somático
+  "relaja los",
+  "relaja tus",
+  "suelta la tensión",
+  "mandíbula",
+  "hombros",
+
+  // Escenas físicas inventadas
+  "cierra carpetas",
+  "limpia tu espacio de trabajo",
+  "apaga dispositivos",
+  "habitacion con",
+  "dispositivos que necesitan",
+  "teclado",
   "pantalla",
+  "escritorio",
+
+  // Meta / hablar como asistente
+  "como asistente",
+  "como una ia",
+  "como una inteligencia artificial",
+  "te estoy escuchando",
+  "escuchándote",
+  "oyéndote",
+  "escucho",
+  "hablando..."
 ];
 
-const bannedLineEs = `Avoid these phrases entirely: ${bannedPhrasesEs
+const bannedLineEs = `Evita completamente expresiones como: ${bannedPhrasesEs
   .map((p) => `"${p}"`)
   .join(", ")}.`;
 
