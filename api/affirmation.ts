@@ -186,112 +186,127 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Name inclusion policy (35% unless mustIncludeName)
   const includeName = mustIncludeName ? true : Math.random() < 0.35;
 
-  const OPENER_BANK = {
-  morning: [
-    "As the day begins, choose a single clear priority.",
-    "This morning, keep your pace calm and deliberate.",
-    "Before you start, take one steady breath and set direction.",
-    "Open the day with one small, clean win.",
-    "Begin with clarity, not urgency.",
-  ],
-  afternoon: [
-    "Midday is a chance to tighten focus and simplify.",
-    "Return to the one task that moves things forward.",
-    "Keep your attention clean and your next step obvious.",
-    "Let the middle of the day be steady, not rushed.",
-    "Choose progress over perfection and move once.",
-  ],
-
-  evening: [
-    "Tonight, you can set things down without losing momentum.",
-    "Let the day end cleanly, even if everything isn’t finished.",
-    "Choose a quiet ending, then step away on purpose.",
-    "Close one open loop, and let the rest wait with dignity.",
-    "Release the need to solve everything before rest.",
-    "Give your mind a clear stopping point.",
-    "Make peace with what was enough today.",
-    "Let completion be gentle, not perfect.",
-    "Put a soft boundary around work and let it end there.",
-    "Allow your attention to loosen its grip.",
-    "Return to simplicity and let the noise fade.",
-    "Let your shoulders drop and your jaw unclench.",
-    "Offer yourself a calm finish line.",
-    "End the day with one small act of closure.",
-    "Let the unfinished remain unfinished for now.",
-    "Tonight, choose ease over extra effort.",
-    "Mark the day as complete in your own way.",
-    "Let the pace slow without guilt.",
-    "Step out of problem-solving mode.",
-    "Allow rest to be the next decision.",
-    "Give your body permission to soften.",
-    "Let your thoughts come to a natural pause.",
-    "Choose a quiet reset for tomorrow.",
-    "Let the day close with clarity, not pressure.",
-    "Leave space for sleep by clearing one small thing.",
-    "Set down the mental checklist for now.",
-    "Allow the mind to settle into a simpler focus.",
-    "Finish with gratitude for effort, not outcomes.",
-    "Let what happened be what happened, and release the rest.",
-    "Turn down the internal volume and come back to the room.",
-    "Let the last hour be lighter than the day.",
-    "Choose stillness as a form of strength.",
-    "Let your next step be to stop.",
-    "End the evening with a clean, quiet exhale.",
-    "Let your attention return to the present moment.",
-    "Tonight, you don’t need to prove anything.",
-    "Let yourself be off-duty.",
-    "Close the day the way you’d close a door: gently and fully.",
-    "Allow the day to conclude without replaying it.",
-    "Let your mind unclutter as the night arrives.",
-    "Choose a softer focus and let it be enough.",
-    "Release urgency; there’s nothing to chase right now.",
-    "Let rest be intentional, not accidental.",
-    "Let your body know it’s safe to slow down.",
-    "Make room for sleep by letting go of one worry.",
-    "Let the day end without negotiation.",
-    "Set your intention for rest, then follow it.",
-    "Let your breathing guide you toward a quieter pace.",
-    "Choose a calm landing after a full day.",
-    "Let the day finish in one piece, even if it wasn’t perfect."
-  ],
-
-  bedtime: [
-    "Let the day come to an end on purpose.",
-    "Close the day with a clear stopping point.",
-    "Let what is unfinished wait until tomorrow.",
-    "End the day without adding anything more to it.",
-    "Allow the day to be complete as it is.",
-    "Mark the end of today and set it down.",
-    "Choose a point to stop, and let it be enough.",
-    "Let the night begin and the day conclude.",
-    "Bring the day to a quiet close.",
-    "Let the last thing you do be to stop.",
-  ],
-
-  } as const;
-
-  function pick<T>(arr: readonly T[]) {
-  return arr[Math.floor(Math.random() * arr.length)];
-  }
-
-const openerRaw = pickNonRepeatingOpener(mode, ip, [...OPENER_BANK[mode]], 20);
-
   type Intent = "orient" | "act" | "close" | "rest";
 
-function modeToIntent(mode: DayMode): Intent {
-  switch (mode) {
-    case "morning":
-      return "orient";   // point direction
-    case "afternoon":
-      return "act";      // do the thing
-    case "evening":
-      return "close";    // wind down / close loops
-    case "bedtime":
-      return "rest";     // step away fully
-    default:
-      return "orient";
+  const OPENER_BANK_EN: Record<DayMode, readonly string[]> = {
+    morning: [
+      "The way you start the day already hints at your standard.",
+      "You begin the day more composed than you usually admit.",
+      "Early in the day, your clarity is louder than the noise around you.",
+      "You know how to walk into the morning without rushing your mind.",
+      "The day bends more to your pace than you realize.",
+    ],
+
+    afternoon: [
+      "Midday is where you quietly return to what actually matters.",
+      "You know how to pull your attention back from distraction without drama.",
+      "The middle of the day shows how you handle pressure without performing for anyone.",
+      "You are at your best when you give one thing the full weight of your focus.",
+      "You have a way of simplifying the chaos other people treat as normal.",
+    ],
+
+    evening: [
+      "The way you close the day says more about you than how it started.",
+      "You know how to stop for the day without losing your direction.",
+      "Even when the day stays unfinished, your standard stays intact.",
+      "You draw a line under the day in a way that still respects your effort.",
+      "The day can end while your sense of who you are stays steady.",
+      "Your evenings carry a quiet authority, not a list of apologies.",
+      "You remain sure of your path even on imperfect days.",
+      "How you step out of the day is part of your discipline.",
+    ],
+
+    bedtime: [
+      "You decide where today ends; the clock doesn’t.",
+      "You know how to call a day finished, even when it wasn’t simple.",
+      "The day can stop here without reducing your momentum.",
+      "You have the habit of closing days on your own terms.",
+      "Marking the end of today is one of your quiet forms of control.",
+      "This is a point where you can say that today was enough.",
+      "You don’t need to replay the day to prove it mattered.",
+      "Ending today cleanly is part of how you protect your energy.",
+    ],
+  } as const;
+
+  // 🔹 Mirror, Mirror ES openers – same intent, Spanish identity tone
+  const OPENER_BANK_ES: Record<DayMode, readonly string[]> = {
+    morning: [
+      "La forma en que empiezas el día ya revela tu estándar.",
+      "Comienzas el día más compuesto de lo que sueles admitir.",
+      "A primera hora, tu claridad suena más fuerte que el ruido alrededor.",
+      "Sabes entrar en la mañana sin acelerar tu mente.",
+      "El día se ajusta más a tu ritmo de lo que crees.",
+    ],
+
+    afternoon: [
+      "A mitad del día vuelves en silencio a lo que realmente importa.",
+      "Sabes recuperar la atención sin necesidad de drama.",
+      "El centro del día muestra cómo manejas la presión sin actuar para el público.",
+      "Das tu mejor resultado cuando le das todo tu enfoque a una sola cosa.",
+      "Tienes una manera de simplificar el caos que otros aceptan como normal.",
+    ],
+
+    evening: [
+      "La forma en que cierras el día dice más de ti que cómo lo empezaste.",
+      "Sabes detenerte sin perder la dirección.",
+      "Aunque el día quede incompleto, tu estándar sigue intacto.",
+      "Trazas una línea al final del día sin faltar al respeto a tu propio esfuerzo.",
+      "El día puede terminar mientras tu sentido de quién eres se mantiene firme.",
+      "Tus noches llevan una autoridad silenciosa, no una lista de disculpas.",
+      "Sigues seguro de tu rumbo incluso en días imperfectos.",
+      "La manera en que sales del día también forma parte de tu disciplina.",
+    ],
+
+    bedtime: [
+      "Eres tú quien decide dónde termina hoy, no el reloj.",
+      "Sabes dar por terminado el día incluso cuando no fue sencillo.",
+      "El día puede detenerse aquí sin reducir tu impulso.",
+      "Tienes la costumbre de cerrar el día en tus propios términos.",
+      "Marcar el final de hoy es una de tus formas silenciosas de control.",
+      "Este es un punto en el que puedes decir que hoy fue suficiente.",
+      "No necesitas repetir el día en tu mente para probar que importó.",
+      "Cerrar hoy con claridad también es parte de cómo proteges tu energía.",
+    ],
+  } as const;
+
+  // Simple pick helper (unchanged)
+  function pick<T>(arr: readonly T[]) {
+    return arr[Math.floor(Math.random() * arr.length)];
   }
-}
+
+  // If you already have pickNonRepeatingOpener, reuse it.
+  // Here’s how to wire language + mode into it:
+  function getOpenerRaw(
+    mode: DayMode,
+    ip: string,
+    language: "en" | "es",
+    pickNonRepeatingOpener: (
+      mode: DayMode,
+      ip: string,
+      candidates: string[],
+      historySize: number
+    ) => string
+  ) {
+    const bank = language === "es" ? OPENER_BANK_ES : OPENER_BANK_EN;
+    // keep your existing historySize (20)
+    return pickNonRepeatingOpener(mode, ip, [...bank[mode]], 20);
+  }
+
+  // Intent mapping stays exactly as you had it
+  function modeToIntent(mode: DayMode): Intent {
+    switch (mode) {
+      case "morning":
+        return "orient";   // point direction
+      case "afternoon":
+        return "act";      // do the thing
+      case "evening":
+        return "close";    // wind down / close loops
+      case "bedtime":
+        return "rest";     // step away fully
+      default:
+        return "orient";
+    }
+  }
 
 
 const intent = modeToIntent(mode);
