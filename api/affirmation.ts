@@ -439,10 +439,6 @@ const bannedPhrasesEn = [
   "hearing you"
 ];
 
-
-
-
-
 const intentTextEn =
   intent === "orient"
     ? "Focus on clarifying where the person is and what matters right now."
@@ -480,24 +476,27 @@ const baseRulesEn = [
 ].join(' ');
 
 const baseRulesEs = [
-  `Eres MIRROR, MIRROR: reflejas identidad con autoridad calma.`,
+  `Escribe una breve declaración tipo espejo en la voz "Calm Operator".`,
   `Escribe exactamente ${sentences} oración(es) corta(s).`,
   `NO escribas más de ${sentences} oración(es) bajo ninguna circunstancia.`,
-  "Cada oración debe ser declarativa y sobre identidad o postura, no sobre tareas o pasos.",
-  "No hagas preguntas.",
-  "No des consejos ni instrucciones.",
-  "No elogies, no felicites, no motives y no tranquilices.",
-  "Evita lenguaje terapéutico (sanar, trauma, procesar emociones, validar sentimientos).",
-  "Evita lenguaje corporativo o de productividad (desempeño, productividad, resultados, metas, trabajo, rendimiento).",
-  "Evita lenguaje de 'hustle' o exigencia (sin excusas, dar más, esforzarte más).",
+  "Sé práctico y sereno.",
+  "Cada oración debe ser corta y directa.",
+  "Evita hacer una lista de pequeños pasos. Combina ideas relacionadas en menos oraciones, más firmes.",
+  "Prefiere postura y decisión sobre emoción o descripción.",
   "NO describas el estado mental del usuario.",
-  "NO narres lo que el usuario está haciendo o sintiendo en este momento.",
-  "NO inventes situaciones específicas, aplicaciones, dispositivos, objetos o lugares.",
-  "Sin metáforas, sin imágenes, sin instrucciones de respiración.",
-  "NO expliques lo que haces. Devuelve solo la frase final.",
-  "Las oraciones deben ser breves, simples y declarativas.",
+  "NO narres lo que el usuario está haciendo en este momento.",
+  "NO inventes escenas físicas concretas: nada de salas, habitaciones, mesas, escritorios, sofás, oficinas, documentos, correos electrónicos, pantallas ni dispositivos.",
+  "NO hables de 'entorno', 'espacio','lugar', 'momento presente', 'intimidad con el momento' ni 'elección consciente'.",
+  "NO uses verbos en modo imperativo como 'actúa', 'opta', 'elige', 'tómate un momento', 'debes', 'deberías'.",
+  "NO uses lenguaje terapéutico, elogios, hype ni clichés.",
+  "NO menciones 'la situación', 'esta situación', 'hechos', 'información', 'evaluación' o 'prioridad'.",
+  "NO uses órdenes extremas o absolutas como 'inmediatamente', 'completamente' o 'totalmente'.",
+  "NO menciones computadoras, teléfonos, aplicaciones ni acciones de software como cerrar aplicaciones o apagar dispositivos.",
+  "Sin metáforas, sin imaginacion, sin instrucciones de respiración.",
+  "Cada oración debe ser simple y declarativa.",
   "Sin emojis. Sin signos de exclamación."
-].join(' ');
+].join(" ");
+
 
 const bannedPhrasesEs = [
     // Lenguaje de app calm / meditación
