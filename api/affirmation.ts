@@ -489,6 +489,7 @@ const baseRulesEs = [
   "NO hables de 'entorno', 'espacio','lugar', 'momento presente', 'intimidad con el momento' ni 'elección consciente'.",
   "NO uses verbos en modo imperativo como 'actúa', 'opta', 'elige', 'tómate un momento', 'debes', 'deberías'.",
   "NO uses lenguaje terapéutico, elogios, hype ni clichés.",
+  "No asumas que el usuario esta trabajando o ejecutando tareas",
   "NO menciones 'la situación', 'esta situación', 'hechos', 'información', 'evaluación' o 'prioridad'.",
   "NO uses órdenes extremas o absolutas como 'inmediatamente', 'completamente' o 'totalmente'.",
   "NO menciones computadoras, teléfonos, aplicaciones ni acciones de software como cerrar aplicaciones o apagar dispositivos.",
