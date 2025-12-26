@@ -458,17 +458,18 @@ const bannedPhrasesEn = [
 
 const intentTextEn =
   intent === "orient"
-    ? "Focus on clarifying where the person is and what matters right now."
+    ? "Reflect how the person tends to orient themselves and what currently matters in their stance, not tasks."
     : intent === "act"
-    ? "Focus on recommending one clean, realistic next step."
-    : "Focus on choosing a stopping point and ending the day on purpose, without urgency or extreme language.";
+    ? "Reflect how the person tends to act and make decisions, without listing tasks or giving instructions."
+    : "Reflect how the person tends to close or step away, without rest instructions, task lists, or soothing language.";
 
 const intentTextEs =
   intent === "orient"
-    ? "Enfócate en aclarar dónde está la persona y qué importa ahora."
+    ? "Refleja cómo la persona suele orientarse y qué importa ahora en su postura, no en tareas."
     : intent === "act"
-    ? "Enfócate en recomendar un siguiente paso claro y realista."
-    : "Enfócate en ayudar a cerrar el día o cerrar un pendiente de forma deliberada.";
+    ? "Refleja cómo la persona suele actuar y decidir, sin listar tareas ni dar instrucciones."
+    : "Refleja cómo la persona suele cerrar o tomar distancia, sin instrucciones de descanso, listas de tareas ni lenguaje de consuelo.";
+
 
 const baseRulesEn = [
   `You are MIRROR, MIRROR — a luxury identity-reflection system.`,
@@ -501,8 +502,11 @@ const baseRulesEs = [
   "Evita hacer una lista de pequeños pasos. Combina ideas relacionadas en menos oraciones, más firmes.",
   "Prefiere postura y decisión sobre emoción o descripción.",
   "NO describas el estado mental del usuario.",
-  // ⬇️ NUEVO: bloquear lenguaje de tareas / objetivos
-  "NO hables de tareas, objetivos, plazos, periodos, recursos, asistencia, listas, impacto, resultados ni productividad.",
+  // lenguaje de tareas / objetivos
+  "NO hables de tareas, objetivos, pasos, plazos, periodos, recursos, asistencia, listas, impacto, resultados ni productividad.",
+  // imperativos / instrucciones
+  "NO des instrucciones ni órdenes como 'revisa', 'evalúa', 'define', 'elige', 'identifica', 'ejecuta', 'actúa', 'procede', 'mantén', 'toma nota'.",
+  "NO escribas oraciones que comiencen directamente con un verbo en modo imperativo.",
   "NO narres lo que el usuario está haciendo en este momento.",
   "NO inventes situaciones físicas específicas, objetos, dispositivos, habitaciones, mesas, documentos, correos electrónicos o pantallas.",
   "NO uses lenguaje terapéutico, elogios, hype ni clichés.",
@@ -513,7 +517,6 @@ const baseRulesEs = [
   "Cada oración debe ser simple y declarativa.",
   "Sin emojis. Sin signos de exclamación."
 ].join(" ");
-
 
 const bannedPhrasesEs = [
   // calm / terapia / meditación
@@ -564,7 +567,93 @@ const bannedPhrasesEs = [
   "documentos",
   "correo electrónico",
   "pantalla",
+
+   "tarea",
+  "tareas",
+  "objetivo",
+  "objetivos",
+  "paso concreto",
+  "siguiente paso",
+  "plazo",
+  "plazos",
+  "periodo",
+  "período",
+  "recurso",
+  "recursos",
+  "asistencia",
+  "lista",
+  "listado",
+  "impacto",
+  "resultados",
+  "productividad",
+
+  // Patrones que estás viendo en tus ejemplos
+  "decide qué aspecto merece atención inmediata",
+  "decide qué opción puedes tomar ahora",
+  "elige la opción que mejor se alinea",
+  "identifica lo que sigue",
+  "confirma el siguiente paso",
+  "mantén el ritmo constante y controlado",
+  "procede con paso firme",
+  "actúa en consecuencia para avanzar",
+
+  // Verbos en imperativo típicos del banco de frases
+  "revisa la información",
+  "evalúa lo que tienes delante",
+  "analiza la decisión",
+  "identifica qué se puede manejar",
+  "decide un punto específico",
+  "elige un punto claro para avanzar",
+  "toma nota de lo que necesitas abordar",
 ];
+
+const TASKY_VERBS_ES = [
+  "revisa",
+  "revisar",
+  "evalúa",
+  "evalua",
+  "analiza",
+  "identifica",
+  "decide",
+  "elige",
+  "ejecuta",
+  "ejecutar",
+  "actúa",
+  "actua",
+  "procede",
+  "mantén",
+  "mantener",
+  "organiza",
+  "toma nota",
+  "prioriza",
+  "priorizar",
+];
+
+const TASKY_NOUNS_ES = [
+  "tarea",
+  "tareas",
+  "objetivo",
+  "objetivos",
+  "paso",
+  "pasos",
+  "plazo",
+  "plazos",
+  "periodo",
+  "período",
+  "lista",
+  "listado",
+  "impacto",
+  "resultados",
+  "productividad",
+];
+
+function isTaskySpanishOutput(text: string): boolean {
+  const t = text.toLowerCase();
+  return (
+    TASKY_VERBS_ES.some((w) => t.includes(w)) ||
+    TASKY_NOUNS_ES.some((w) => t.includes(w))
+  );
+}
 
 
 const bannedLineEs = `Evita completamente expresiones como: ${bannedPhrasesEs
@@ -600,13 +689,32 @@ const prompt =
     const r = await client.responses.create({
       model: "gpt-4.1-mini",
       input: prompt,
-      temperature: 1.1
+      temperature: 0.8,
     });
 
-   let text = String(r.output_text ?? "").trim();
+       let text = String(r.output_text ?? "").trim();
 
     if (!text) {
       return res.status(502).json({ error: "Empty response from model" });
+    }
+
+    // Segunda oportunidad si el español salió muy "coach/productividad"
+    if (language === "es" && isTaskySpanishOutput(text)) {
+      try {
+        const r2 = await client.responses.create({
+          model: "gpt-4.1-mini",
+          input: prompt,
+          // un poco menos de temperatura para que se pegue más a las reglas
+          temperature: 0.8,
+        });
+        const alt = String(r2.output_text ?? "").trim();
+        if (alt && !isTaskySpanishOutput(alt)) {
+          text = alt;
+        }
+      } catch (e) {
+        // si falla el segundo intento, dejamos el primero, pero ya lo hemos logueado arriba
+        console.warn("Spanish regen failed, keeping original text");
+      }
     }
 
     const result: AffirmationResult = {
