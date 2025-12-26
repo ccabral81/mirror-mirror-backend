@@ -453,7 +453,40 @@ const bannedPhrasesEn = [
   "as an ai",
   "assistant",
   "listening",
-  "hearing you"
+    "hearing you",
+  "feels too much",
+  "feel too much",
+  "feel overwhelming",
+  "overwhelming",
+  "overwhelmed",
+  "shield",
+  "core",
+  "exposure",
+  "cannot be crossed",
+  "builds a boundary",
+  "silence becomes",
+];
+
+const METAPHOR_EN = [
+  "shield",
+  "armor",
+  "wall",
+  "line that cannot be crossed",
+  "builds a boundary",
+  "core",
+  "exposure",
+  "journey",
+  "path",
+];
+
+const EMOTIONAL_STATE_EN = [
+  "feel overwhelmed",
+  "feels overwhelming",
+  "feels too much",
+  "feel too much",
+  "too much to handle",
+  "heavy to carry",
+  "emotional burden",
 ];
 
 const intentTextEn =
@@ -488,6 +521,8 @@ const baseRulesEn = [
   "No metaphors. No imagery. No breathing instructions.",
   "Do NOT mention facts, information, assessments, or priorities.",
   "Do NOT explain what you are doing. Return only the final statement.",
+  "Do NOT use metaphors such as shields, lines, walls, roads, journeys, or stories.",
+  "Do NOT describe how things 'feel' or whether something is overwhelming, heavy, or too much.",
   "Sentences must be short, plain, and declarative.",
   "No emojis. No exclamation marks.",
   "Do not overuse 'You are' phrasing; vary structure naturally, but it is allowed.",
@@ -520,6 +555,7 @@ const baseRulesEs = [
   "NO menciones 'la situación', 'esta situación', 'hechos', 'información', 'evaluación' o 'prioridad'.",
   "NO uses órdenes extremas o absolutas como 'inmediatamente', 'completamente' o 'totalmente'.",
   "NO menciones computadoras, teléfonos, aplicaciones ni acciones de software como cerrar aplicaciones o apagar dispositivos.",
+  "NO uses lenguaje de carga emocional como 'cargar más', 'peso' o 'lastre'.",
   "Sin metáforas, sin imágenes, sin instrucciones de respiración.",
   "Cada oración debe ser simple y declarativa.",
   "Sin emojis. Sin signos de exclamación."
@@ -676,6 +712,13 @@ const bannedPhrasesEs = [
   "el momento se detiene aquí",
   "todo queda en pausa",
 
+  "cargar más ahora",
+  "cargar más",
+  "queda registrado",
+  "todo queda registrado",
+  "se guarda en la memoria",
+
+
   // procesamiento / carga
   "lo que no se atiende ahora no desaparece",
   "no debe cargar más",
@@ -758,6 +801,23 @@ const CYCLE_META_ES = [
   "otra historia",
 ];
 
+const EMO_LOAD_ES = [
+  "cargar más",
+  "queda registrado",
+  "se guarda en la memoria",
+];
+
+function isBadEnglishOutput(text: string): boolean {
+  const t = text.toLowerCase();
+
+  // Any obvious metaphor or emotional-state narration is off-brand
+  if (METAPHOR_EN.some((w) => t.includes(w))) return true;
+  if (EMOTIONAL_STATE_EN.some((w) => t.includes(w))) return true;
+
+  return false;
+}
+
+
 function isTaskySpanishOutput(text: string): boolean {
   const t = text.toLowerCase();
   return (
@@ -766,7 +826,8 @@ function isTaskySpanishOutput(text: string): boolean {
     SOFT_VALIDATION_ES.some((w) => t.includes(w)) ||
     CALM_SILENCE_ES.some((w) => t.includes(w)) ||
     FIRST_PERSON_ES.some((w) => t.includes(w)) ||
-    CYCLE_META_ES.some((w) => t.includes(w))
+    CYCLE_META_ES.some((w) => t.includes(w)) ||
+    EMO_LOAD_ES.some((w) => t.includes(w))
   );
 }
 
@@ -812,23 +873,42 @@ const prompt =
       return res.status(502).json({ error: "Empty response from model" });
     }
 
-    // Segunda oportunidad si el español salió muy "coach/productividad"
-    if (language === "es" && isTaskySpanishOutput(text)) {
+     // 🔁 1) Spanish: retry once if it sounds like tasks/coach/etc.
+    if (language === "es" && typeof isTaskySpanishOutput === "function" && isTaskySpanishOutput(text)) {
       try {
         const r2 = await client.responses.create({
           model: "gpt-4.1-mini",
           input: prompt,
-          // un poco menos de temperatura para que se pegue más a las reglas
-          temperature: 0.8,
+          temperature: 0.7, // slightly lower for regeneration
         });
         const alt = String(r2.output_text ?? "").trim();
         if (alt && !isTaskySpanishOutput(alt)) {
           text = alt;
         }
       } catch (e) {
-        // si falla el segundo intento, dejamos el primero, pero ya lo hemos logueado arriba
         console.warn("Spanish regen failed, keeping original text");
       }
+    }
+
+    // 🔁 2) English: retry once if it has metaphors or emotional-state narration
+    if (language === "en" && isBadEnglishOutput(text)) {
+      try {
+        const r2 = await client.responses.create({
+          model: "gpt-4.1-mini",
+          input: prompt,
+          temperature: 0.7, // lower temp to hug the rules tighter
+        });
+        const alt = String(r2.output_text ?? "").trim();
+        if (alt && !isBadEnglishOutput(alt)) {
+          text = alt;
+        }
+      } catch (e) {
+        console.warn("English regen failed, keeping original text");
+      }
+    }
+
+    if (!text) {
+      return res.status(502).json({ error: "Empty response after filtering" });
     }
 
     const result: AffirmationResult = {
@@ -841,6 +921,7 @@ const prompt =
     };
 
     return res.status(200).json(result);
+
   } catch (err: any) {
     // Helpful logging for Vercel function logs (avoid printing secrets)
     console.error("AI invocation failed:", err?.message ?? err);
