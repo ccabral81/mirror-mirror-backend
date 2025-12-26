@@ -507,6 +507,11 @@ const baseRulesEs = [
   // imperativos / instrucciones
   "NO des instrucciones ni órdenes como 'revisa', 'evalúa', 'define', 'elige', 'identifica', 'ejecuta', 'actúa', 'procede', 'mantén', 'toma nota'.",
   "NO escribas oraciones que comiencen directamente con un verbo en modo imperativo.",
+  // ⬇️ NUEVO: no validación, no consuelo
+  "NO tranquilices ni valides con frases como 'está bien', 'es válido', 'no hay necesidad', 'no exige respuesta inmediata', 'es suficiente'.",
+  // ⬇️ NUEVO: no calma interna / silencio / metáforas de ciclo/capítulo
+  "NO hables de calma interna, ruido externo, silencio interno, silencio como refugio ni cierres de 'ciclos' o 'capítulos'.",
+  "NO uses lenguaje de procesamiento emocional como 'procesar lo que pasó' o 'procesar ahora'.",
   "NO narres lo que el usuario está haciendo en este momento.",
   "NO inventes situaciones físicas específicas, objetos, dispositivos, habitaciones, mesas, documentos, correos electrónicos o pantallas.",
   "NO uses lenguaje terapéutico, elogios, hype ni clichés.",
@@ -517,6 +522,7 @@ const baseRulesEs = [
   "Cada oración debe ser simple y declarativa.",
   "Sin emojis. Sin signos de exclamación."
 ].join(" ");
+
 
 const bannedPhrasesEs = [
   // calm / terapia / meditación
@@ -587,6 +593,42 @@ const bannedPhrasesEs = [
   "resultados",
   "productividad",
 
+    // validación / consuelo
+  "está bien",
+  "esta bien",
+  "es válido",
+  "es valido",
+  "no hay necesidad",
+  "no exige respuesta inmediata",
+  "lo que has hecho hasta ahora es suficiente",
+  "es suficiente",
+  "fue suficiente",
+
+  // calma / silencio / ruido
+  "conservar la calma",
+  "calma interna",
+  "ruido externo",
+  "silencio interno",
+  "silencio también es una decisión",
+  "el silencio es una decisión firme",
+
+  // metáforas de ciclo / capítulo / momento
+  "cerrar este ciclo",
+  "ciclo",
+  "cerrar el capítulo",
+  "capítulo",
+  "este momento termina aquí",
+
+  // terapia / procesar
+  "no hay más que procesar",
+  "procesar ahora",
+  "procesar lo que fue",
+  "procesar lo que pasó",
+
+  // voz del asistente en primera persona
+  "reconozco tu manera de cerrar",
+
+
   // Patrones que estás viendo en tus ejemplos
   "decide qué aspecto merece atención inmediata",
   "decide qué opción puedes tomar ahora",
@@ -647,11 +689,30 @@ const TASKY_NOUNS_ES = [
   "productividad",
 ];
 
+const SOFT_VALIDATION_ES = [
+  "está bien",
+  "esta bien",
+  "es válido",
+  "es valido",
+  "es suficiente",
+  "fue suficiente",
+];
+
+const CALM_SILENCE_ES = [
+  "conservar la calma",
+  "silencio interno",
+  "silencio también es una decisión",
+  "el silencio es una decisión firme",
+  "ruido externo",
+];
+
 function isTaskySpanishOutput(text: string): boolean {
   const t = text.toLowerCase();
   return (
     TASKY_VERBS_ES.some((w) => t.includes(w)) ||
-    TASKY_NOUNS_ES.some((w) => t.includes(w))
+    TASKY_NOUNS_ES.some((w) => t.includes(w)) ||
+    SOFT_VALIDATION_ES.some((w) => t.includes(w)) ||
+    CALM_SILENCE_ES.some((w) => t.includes(w))
   );
 }
 
