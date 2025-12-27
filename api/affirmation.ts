@@ -491,6 +491,13 @@ const METAPHOR_EN = [
   "shape of self",
   "world narrows",
   "contracts inward",
+  "lines you refuse to cross",
+  "line you refuse to cross",
+  "begins and ends",
+  "where your presence begins and ends",
+  "mark the edges",
+  "edges of presence",
+
 ];
 
 const EMOTIONAL_STATE_EN = [
@@ -510,7 +517,14 @@ const EMOTIONAL_STATE_EN = [
   "before confusion sets in",
   "when the world demands too much",
   "when situations demand too much",
-  
+  "self-preservation",
+  "retreating marks strength",
+  "marks strength",
+  "sign of strength",
+  "not absence",
+  "prove",
+  "proves",
+  "validation",
 ];
 
 const CLOSURE_EN = [
@@ -526,16 +540,14 @@ const intentTextEn =
     ? "Reflect how the person tends to orient themselves and what currently matters in their stance, not tasks."
     : intent === "act"
     ? "Reflect how the person tends to act and make decisions, without listing tasks or giving instructions."
-    : "Reflect how the person relates to limits, distance, and stepping back, without saying that this specific day or moment is ending.";
+    : "Reflect how the person typically moves from intensity into a calmer mental pace, without giving advice or saying that this day or moment is ending.";
 
 const intentTextEs =
   intent === "orient"
     ? "Refleja cómo la persona suele orientarse y qué importa ahora en su postura, no en tareas."
     : intent === "act"
     ? "Refleja cómo la persona suele actuar y decidir, sin listar tareas ni dar instrucciones."
-    : "Refleja cómo la persona se relaciona con los límites, la distancia y el tomar espacio, sin decir que este día o este momento se cierran.";
-
-
+    : "Refleja cómo la persona suele pasar de la intensidad a un ritmo mental más tranquilo, sin dar consejos ni decir que este día o este momento termina.";
 
 const baseRulesEn = [
   `You are MIRROR, MIRROR — a luxury identity-reflection system.`,
@@ -560,6 +572,8 @@ const baseRulesEn = [
   "Do NOT describe how things feel (overwhelming, too much, intrusive, confusing, heavy).",
   "Do NOT narrate that 'this day' or 'this moment' is ending, closing, or stopping here.",
   "Do NOT talk about closing cycles, chapters, or stories.",
+  "Do NOT praise the user or frame actions as strength, courage, resilience, or growth.",
+  "Do NOT use therapy language such as self-preservation, healing, coping, processing, or protection of the inner self.",
   "Sentences must be short, plain, and declarative.",
   "No emojis. No exclamation marks.",
   "Do not overuse 'You are' phrasing; vary structure naturally, but it is allowed.",
@@ -585,6 +599,8 @@ const baseRulesEs = [
   "NO hables de calma interna, ruido externo, silencio interno, silencio como refugio ni cierres de 'ciclos' o 'capítulos'.",
   "NO uses lenguaje de procesamiento emocional como 'procesar lo que pasó' o 'procesar ahora'.",
   "NO narres lo que el usuario está haciendo en este momento.",
+  "NO elogies ni atribuyas fortaleza, valentía, resiliencia o crecimiento.",
+  "NO uses lenguaje terapéutico como autopreservación, sanación, procesamiento o protección interna.",
   "NO narres que 'este día' o 'este momento' terminan, se cierran o se detienen aquí.",
   "NO hables de 'ciclos', 'capítulos', 'historias' ni del 'momento' como algo que se abre o se cierra.",
   "NO inventes situaciones físicas específicas, objetos, dispositivos, habitaciones, mesas, documentos, correos electrónicos o pantallas.",
@@ -599,7 +615,6 @@ const baseRulesEs = [
   "Cada oración debe ser simple y declarativa.",
   "Sin emojis. Sin signos de exclamación."
 ].join(" ");
-
 
 const bannedPhrasesEs = [
   // calm / terapia / meditación
@@ -768,7 +783,12 @@ const bannedPhrasesEs = [
   "el tiempo para esto ha concluido",
   "este día termina aquí",
   "este día se cierra aquí",
-
+  "marca fortaleza",
+  "es una muestra de fortaleza",
+  "autopreservación",
+  "autoprotección",
+  "protegerte a ti mismo",
+  "proteger tu núcleo",
 
 ];
 
@@ -867,10 +887,9 @@ function isBadEnglishOutput(text: string): boolean {
   // Any obvious metaphor or emotional-state narration is off-brand
   if (METAPHOR_EN.some((w) => t.includes(w))) return true;
   if (EMOTIONAL_STATE_EN.some((w) => t.includes(w))) return true;
-
+  if (CLOSURE_EN.some((w) => t.includes(w))) return true;
   return false;
 }
-
 
 function isTaskySpanishOutput(text: string): boolean {
   const t = text.toLowerCase();
