@@ -540,14 +540,18 @@ const intentTextEn =
     ? "Reflect how the person tends to orient themselves and what currently matters in their stance, not tasks."
     : intent === "act"
     ? "Reflect how the person tends to act and make decisions, without listing tasks or giving instructions."
-    : "Reflect how the person typically moves from intensity into a calmer mental pace, without giving advice or saying that this day or moment is ending.";
+    :intent === "close"
+    ? "Reflect how the person typically moves from intensity into a calmer mental pace, without giving advice or saying that this day or moment is ending."
+    :"Reflect the person’s relationship with rest and release of intensity, without mentioning sleep or the end of the day and without giving instructions.";
 
 const intentTextEs =
   intent === "orient"
     ? "Refleja cómo la persona suele orientarse y qué importa ahora en su postura, no en tareas."
     : intent === "act"
     ? "Refleja cómo la persona suele actuar y decidir, sin listar tareas ni dar instrucciones."
-    : "Refleja cómo la persona suele pasar de la intensidad a un ritmo mental más tranquilo, sin dar consejos ni decir que este día o este momento termina.";
+    : intent === "close"
+    ? "Refleja cómo la persona suele pasar de la intensidad a un ritmo mental más tranquilo, sin dar consejos ni decir que este día o este momento termina."
+    : "Refleja cómo la persona se relaciona con el descanso y la disminución de la intensidad, sin dar instrucciones ni decir que este día o momento termina.";
 
 const baseRulesEn = [
   `You are MIRROR, MIRROR — a luxury identity-reflection system.`,
